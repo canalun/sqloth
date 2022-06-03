@@ -54,6 +54,7 @@ func StrToColumnTypeBase(str string) (ColumnTypeBase, error) {
 // TODO: rethink if these types are needed
 type ColumnData string
 type ColumnName string
+type ColumnFullName string
 type Constraint struct {
 	TableName
 	ColumnName
@@ -67,10 +68,11 @@ func NewConstraint(tn TableName, cn ColumnName) Constraint {
 }
 
 type Column struct {
-	Name         ColumnName
-	Type         ColumnType
-	Constraint   Constraint
-	DataToInsert []ColumnData
+	Name          ColumnName
+	FullName      ColumnFullName
+	Type          ColumnType
+	AutoIncrement bool
+	Constraint    Constraint
 }
 
 func NewColumn(name ColumnName, ct ColumnType) Column {
@@ -78,6 +80,10 @@ func NewColumn(name ColumnName, ct ColumnType) Column {
 		Name: ColumnName(name),
 		Type: ct,
 	}
+}
+
+func NewColumnFullName(tn TableName, cn ColumnName) ColumnFullName {
+	return ColumnFullName(string(tn) + "." + string(cn))
 }
 
 func (c Column) HasConstraint() bool {

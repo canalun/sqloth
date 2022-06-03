@@ -1,9 +1,8 @@
-package service
+package model
 
 import (
 	"testing"
 
-	"github.com/canalun/sqloth/domain/model"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -41,7 +40,7 @@ func TestNewAdjacencyMatrix(t *testing.T) {
 
 func TestGenerateAdjacencyMatrix(t *testing.T) {
 	type args struct {
-		schema model.Schema
+		schema Schema
 	}
 	tests := []struct {
 		name string
@@ -51,50 +50,50 @@ func TestGenerateAdjacencyMatrix(t *testing.T) {
 		{
 			name: "generate correct adjacency matrix",
 			args: args{
-				schema: model.Schema{
-					Tables: []model.Table{
+				schema: Schema{
+					Tables: []Table{
 						{
 							Name: "customer",
-							Columns: []model.Column{
+							Columns: []Column{
 								{
 									Name: "id",
-									Type: model.ColumnType{
-										Base:  model.Int,
-										Param: model.ColumnTypeParam(10),
+									Type: ColumnType{
+										Base:  Int,
+										Param: ColumnTypeParam(10),
 									},
-									Constraint: model.Constraint{
+									Constraint: Constraint{
 										TableName:  "product",
 										ColumnName: "id",
 									},
 								},
 								{
 									Name: "name",
-									Type: model.ColumnType{
-										Base:  model.Varchar,
-										Param: model.ColumnTypeParam(255),
+									Type: ColumnType{
+										Base:  Varchar,
+										Param: ColumnTypeParam(255),
 									},
 								},
 							},
 						},
 						{
 							Name: "product",
-							Columns: []model.Column{
+							Columns: []Column{
 								{
 									Name: "id",
-									Type: model.ColumnType{
-										Base:  model.Int,
-										Param: model.ColumnTypeParam(14),
+									Type: ColumnType{
+										Base:  Int,
+										Param: ColumnTypeParam(14),
 									},
 								},
 								{
 									Name: "owner",
-									Type: model.ColumnType{
-										Base:  model.Varchar,
-										Param: model.ColumnTypeParam(255),
+									Type: ColumnType{
+										Base:  Varchar,
+										Param: ColumnTypeParam(255),
 									},
-									Constraint: model.Constraint{
-										TableName:  model.TableName("customer"),
-										ColumnName: model.ColumnName("name"),
+									Constraint: Constraint{
+										TableName:  TableName("customer"),
+										ColumnName: ColumnName("name"),
 									},
 								},
 							},
@@ -123,7 +122,7 @@ func TestGenerateAdjacencyMatrix(t *testing.T) {
 
 func TestGenerateSortedColumnList(t *testing.T) {
 	type args struct {
-		schema model.Schema
+		schema Schema
 		am     AdjacencyMatrix
 	}
 	tests := []struct {
@@ -138,37 +137,37 @@ func TestGenerateSortedColumnList(t *testing.T) {
 			// so the expected sorted list should meet the following;
 			// 2 is before 3, 4 is before 1
 			args: args{
-				schema: model.Schema{
-					Tables: []model.Table{
+				schema: Schema{
+					Tables: []Table{
 						{
 							Name: "staff",
-							Columns: []model.Column{
+							Columns: []Column{
 								{
 									Name: "id",
-									Type: model.ColumnType{
-										Base:  model.Int,
-										Param: model.ColumnTypeParam(14),
+									Type: ColumnType{
+										Base:  Int,
+										Param: ColumnTypeParam(14),
 									},
 								},
 								{
 									Name: "name",
-									Type: model.ColumnType{
-										Base:  model.Varchar,
-										Param: model.ColumnTypeParam(255),
+									Type: ColumnType{
+										Base:  Varchar,
+										Param: ColumnTypeParam(255),
 									},
 								},
 							},
 						},
 						{
 							Name: "customer",
-							Columns: []model.Column{
+							Columns: []Column{
 								{
 									Name: "id",
-									Type: model.ColumnType{
-										Base:  model.Int,
-										Param: model.ColumnTypeParam(10),
+									Type: ColumnType{
+										Base:  Int,
+										Param: ColumnTypeParam(10),
 									},
-									Constraint: model.Constraint{
+									Constraint: Constraint{
 										TableName:  "product",
 										ColumnName: "id",
 									},
@@ -177,23 +176,23 @@ func TestGenerateSortedColumnList(t *testing.T) {
 						},
 						{
 							Name: "product",
-							Columns: []model.Column{
+							Columns: []Column{
 								{
 									Name: "id",
-									Type: model.ColumnType{
-										Base:  model.Int,
-										Param: model.ColumnTypeParam(14),
+									Type: ColumnType{
+										Base:  Int,
+										Param: ColumnTypeParam(14),
 									},
 								},
 								{
 									Name: "owner",
-									Type: model.ColumnType{
-										Base:  model.Varchar,
-										Param: model.ColumnTypeParam(255),
+									Type: ColumnType{
+										Base:  Varchar,
+										Param: ColumnTypeParam(255),
 									},
-									Constraint: model.Constraint{
-										TableName:  model.TableName("staff"),
-										ColumnName: model.ColumnName("name"),
+									Constraint: Constraint{
+										TableName:  TableName("staff"),
+										ColumnName: ColumnName("name"),
 									},
 								},
 							},

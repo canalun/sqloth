@@ -1,8 +1,4 @@
-package service
-
-import (
-	"github.com/canalun/sqloth/domain/model"
-)
+package model
 
 // to handle constraints among columns, sqloth has to sort the columns.
 // sqloth abstracts columns and their relationship as directed graph, and it uses topological sort.
@@ -12,7 +8,7 @@ import (
 
 // TODO: fix to handle multi-index-key
 // TODO: consider how to handle cyclic constraint
-func GenerateSortedColumnList(schema model.Schema, am AdjacencyMatrix) []int {
+func GenerateSortedColumnList(schema Schema, am AdjacencyMatrix) []int {
 	n := len(am)
 
 	numsTodo := make([]int, len(am))
@@ -51,7 +47,7 @@ func sumOfIntList(l []int) int {
 	return re
 }
 
-// Adjacency Matrix is crucial for the algorithm, but it's just intermediate product (so it's not included in domain).
+// Graph structure of columns expressed by adjacency matrix and nodes is crucial for sqloth algorithm
 type AdjacencyMatrix [][]int
 
 func newAdjacencyMatrix(n int) AdjacencyMatrix {
@@ -64,7 +60,7 @@ func newAdjacencyMatrix(n int) AdjacencyMatrix {
 	return am
 }
 
-func GenerateAdjacencyMatrix(schema model.Schema) AdjacencyMatrix {
+func GenerateAdjacencyMatrix(schema Schema) AdjacencyMatrix {
 	columnToIndex := schema.GetMapFromColumnToIndex()
 
 	am := newAdjacencyMatrix(len(columnToIndex))
