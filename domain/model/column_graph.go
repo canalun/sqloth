@@ -1,5 +1,9 @@
 package model
 
+import (
+	"github.com/pkg/errors"
+)
+
 type ColumnGraph struct {
 	AdjacencyMatrix AdjacencyMatrix
 	ColumnNodes     []ColumnNode
@@ -9,6 +13,14 @@ type ColumnNode struct {
 	column Column
 	isDone bool
 	index  int
+}
+
+func (cn *ColumnNode) Done() {
+	cn.isDone = true
+}
+
+func (cn ColumnNode) IsDone() bool {
+	return cn.isDone
 }
 
 func GenerateColumnGraph(schema Schema) ColumnGraph {
@@ -44,4 +56,65 @@ func GenerateColumnGraph(schema Schema) ColumnGraph {
 		AdjacencyMatrix: am,
 		ColumnNodes:     columnNodes,
 	}
+}
+
+func (cg ColumnGraph) isAllDone() bool {
+	for _, cn := range cg.ColumnNodes {
+		if !cn.isDone {
+			return false
+		}
+	}
+	return true
+}
+
+//TODO: adopt error handling such as Stacktrace
+func (cg ColumnGraph) HasParentNodes(i int) (bool, error) {
+	if i >= len(cg.AdjacencyMatrix) {
+		return false, errors.New("invalid index")
+	}
+	for _, v := range cg.AdjacencyMatrix[i] {
+		if v == 1 {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func (cg ColumnGraph) IsParentNodesAreAllDone(i int) (bool, error) {
+	if i >= len(cg.AdjacencyMatrix) {
+		return false, errors.New("invalid index")
+	}
+	for parentIndex, v := range cg.AdjacencyMatrix[i] {
+		if v == 1 {
+			if !cg.ColumnNodes[parentIndex].IsDone() {
+				return false, nil
+			}
+		}
+	}
+	return true, nil
+}
+
+func (cg ColumnGraph) HasChildrenNodes(i int) (bool, error) {
+	if i >= len(cg.AdjacencyMatrix) {
+		return false, errors.New("invalid index")
+	}
+	for _, r := range cg.AdjacencyMatrix {
+		if r[i] == 1 {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func (cg ColumnGraph) ChildrenNodeIndexes(i int) ([]int, error) {
+	if i >= len(cg.AdjacencyMatrix) {
+		return []int{}, errors.New("invalid index")
+	}
+	childrenNodeIndexes := []int{}
+	for ri, r := range cg.AdjacencyMatrix {
+		if r[i] == 1 {
+			childrenNodeIndexes = append(childrenNodeIndexes, ri)
+		}
+	}
+	return childrenNodeIndexes, nil
 }
