@@ -329,6 +329,66 @@ func TestColumnGraph_IsParentNodesAreAllDone(t *testing.T) {
 	}
 }
 
+func TestColumnGraph_ParentNodeIndexes(t *testing.T) {
+	type fields struct {
+		AdjacencyMatrix AdjacencyMatrix
+	}
+	type args struct {
+		i int
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    []int
+		wantErr bool
+	}{
+		{
+			name: "return indexes of parent nodes of the node with the given index",
+			fields: fields{
+				AdjacencyMatrix: AdjacencyMatrix{
+					{0, 0, 1, 1},
+					{0, 0, 0, 0},
+					{0, 0, 0, 0},
+					{0, 1, 1, 0},
+				},
+			},
+			args:    args{i: 0},
+			want:    []int{2, 3},
+			wantErr: false,
+		},
+		{
+			name: "return empty slice if the node with the given index has no parent nodes",
+			fields: fields{
+				AdjacencyMatrix: AdjacencyMatrix{
+					{0, 0, 1, 0},
+					{0, 0, 0, 0},
+					{0, 0, 0, 0},
+					{0, 1, 0, 0},
+				},
+			},
+			args:    args{i: 2},
+			want:    []int{},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cg := ColumnGraph{
+				AdjacencyMatrix: tt.fields.AdjacencyMatrix,
+			}
+			got, err := cg.ParentNodeIndexes(tt.args.i)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ColumnGraph.ParentNodeIndexes() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ColumnGraph.ParentNodeIndexes() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestColumnGraph_HasChildrenNodes(t *testing.T) {
 	type fields struct {
 		AdjacencyMatrix AdjacencyMatrix

@@ -23,6 +23,10 @@ func (cn ColumnNode) IsDone() bool {
 	return cn.isDone
 }
 
+func (cn ColumnNode) GetColumn() Column {
+	return cn.column
+}
+
 func GenerateColumnGraph(schema Schema) ColumnGraph {
 	columnNodes := []ColumnNode{}
 	columnToIndex := map[string]int{}
@@ -92,6 +96,19 @@ func (cg ColumnGraph) IsParentNodesAreAllDone(i int) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func (cg ColumnGraph) ParentNodeIndexes(i int) ([]int, error) {
+	if i >= len(cg.AdjacencyMatrix) {
+		return []int{}, errors.New("invalid index")
+	}
+	parentNodeIndexes := []int{}
+	for i, v := range cg.AdjacencyMatrix[i] {
+		if v == 1 {
+			parentNodeIndexes = append(parentNodeIndexes, i)
+		}
+	}
+	return parentNodeIndexes, nil
 }
 
 func (cg ColumnGraph) HasChildrenNodes(i int) (bool, error) {
