@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -51,7 +50,6 @@ func GenerateRecordsForTables(vfc map[ColumnFullName][]Value, schema Schema, n i
 		for i := 0; i < n; i++ {
 			var record Record
 			for _, column := range table.Columns {
-				fmt.Printf("%#v\n", column.FullName)
 				record = append(record, vfc[column.FullName][i])
 			}
 			records = append(records, record)
