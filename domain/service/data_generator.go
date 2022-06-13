@@ -13,7 +13,7 @@ func GenerateColumnData(sortedColumnList []int, schema model.Schema, n int) map[
 
 	// have to generate adjacency matrix one more time here.
 	// this is because adjacency matrix is all-zeroized in SortedColumnList() that is called in usecase before this function.
-	adjacencyMatrix := GenerateAdjacencyMatrix(schema)
+	adjacencyMatrix := model.GenerateAdjacencyMatrix(schema)
 
 	data := map[string][]model.ColumnData{}
 	l := reverseSlice(sortedColumnList)

@@ -24,12 +24,11 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 		want   []string
 	}{
 		{
-			name: "can generate query of dummy data from sql schema file",
+			name: "can generate query of dummy data from sql schema file with constraints",
 			fields: fields{
 				driver: func(ctrl *gomock.Controller) driver.Driver {
 					m := mock_driver.NewMockDriver(ctrl)
 					m.EXPECT().GetSchema().Return(model.Schema{
-
 						Tables: []model.Table{
 							{
 								Name: "customer",
@@ -38,20 +37,14 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 										Name: "id",
 										Type: model.ColumnType{
 											Base:  model.Int,
-											Param: model.ColumnTypeParam(10),
-										},
-									},
-									{
-										Name: "created_at",
-										Type: model.ColumnType{
-											Base: model.Timestamp,
+											Param: model.ColumnTypeParam(3),
 										},
 									},
 									{
 										Name: "name",
 										Type: model.ColumnType{
 											Base:  model.Varchar,
-											Param: model.ColumnTypeParam(255),
+											Param: model.ColumnTypeParam(3),
 										},
 									},
 									{
@@ -69,20 +62,23 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 										Name: "id",
 										Type: model.ColumnType{
 											Base:  model.Int,
-											Param: model.ColumnTypeParam(14),
+											Param: model.ColumnTypeParam(3),
 										},
 									},
 									{
-										Name: "name",
-										Type: model.ColumnType{
-											Base:  model.Varchar,
-											Param: model.ColumnTypeParam(255),
-										},
-									},
-									{
-										Name: "description",
+										Name: "customeridname",
 										Type: model.ColumnType{
 											Base: model.Text,
+										},
+										Constraints: []model.Constraint{
+											{
+												TableName:  "customer",
+												ColumnName: "id",
+											},
+											{
+												TableName:  "customer",
+												ColumnName: "name",
+											},
 										},
 									},
 									{
@@ -90,12 +86,6 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 										Type: model.ColumnType{
 											Base:  model.Tinyint,
 											Param: model.ColumnTypeParam(1),
-										},
-									},
-									{
-										Name: "sale_day",
-										Type: model.ColumnType{
-											Base: model.Datetime,
 										},
 									},
 								},

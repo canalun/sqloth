@@ -81,7 +81,7 @@ func (fd FileDriver) GetSchema() model.Schema {
 			constraint := model.NewConstraint(referencedTableName, referencedColumnName)
 			for i, c := range schema.LastTable().Columns {
 				if c.Name == boundedColumnName {
-					schema.LastTable().Columns[i].Constraint = constraint
+					schema.LastTable().Columns[i].Constraints = append(schema.LastTable().Columns[i].Constraints, constraint)
 				}
 			}
 		}

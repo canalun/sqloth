@@ -30,9 +30,11 @@ func TestGenerateColumnGraph(t *testing.T) {
 										Base:  Int,
 										Param: ColumnTypeParam(10),
 									},
-									Constraint: Constraint{
-										TableName:  TableName("product"),
-										ColumnName: ColumnName("id"),
+									Constraints: []Constraint{
+										{
+											TableName:  TableName("product"),
+											ColumnName: ColumnName("id"),
+										},
 									},
 								},
 								{
@@ -60,9 +62,11 @@ func TestGenerateColumnGraph(t *testing.T) {
 										Base:  Varchar,
 										Param: ColumnTypeParam(255),
 									},
-									Constraint: Constraint{
-										TableName:  TableName("customer"),
-										ColumnName: ColumnName("name"),
+									Constraints: []Constraint{
+										{
+											TableName:  TableName("customer"),
+											ColumnName: ColumnName("name"),
+										},
 									},
 								},
 							},
@@ -85,9 +89,11 @@ func TestGenerateColumnGraph(t *testing.T) {
 								Base:  Int,
 								Param: ColumnTypeParam(10),
 							},
-							Constraint: Constraint{
-								TableName:  "product",
-								ColumnName: "id",
+							Constraints: []Constraint{
+								{
+									TableName:  "product",
+									ColumnName: "id",
+								},
 							},
 						},
 						isDone: false,
@@ -122,9 +128,11 @@ func TestGenerateColumnGraph(t *testing.T) {
 								Base:  Varchar,
 								Param: ColumnTypeParam(255),
 							},
-							Constraint: Constraint{
-								TableName:  TableName("customer"),
-								ColumnName: ColumnName("name"),
+							Constraints: []Constraint{
+								{
+									TableName:  TableName("customer"),
+									ColumnName: ColumnName("name"),
+								},
 							},
 						},
 						isDone: false,

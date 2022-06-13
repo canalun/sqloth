@@ -61,9 +61,11 @@ func TestGenerateAdjacencyMatrix(t *testing.T) {
 										Base:  Int,
 										Param: ColumnTypeParam(10),
 									},
-									Constraint: Constraint{
-										TableName:  "product",
-										ColumnName: "id",
+									Constraints: []Constraint{
+										{
+											TableName:  "product",
+											ColumnName: "id",
+										},
 									},
 								},
 								{
@@ -91,9 +93,11 @@ func TestGenerateAdjacencyMatrix(t *testing.T) {
 										Base:  Varchar,
 										Param: ColumnTypeParam(255),
 									},
-									Constraint: Constraint{
-										TableName:  TableName("customer"),
-										ColumnName: ColumnName("name"),
+									Constraints: []Constraint{
+										{
+											TableName:  TableName("customer"),
+											ColumnName: ColumnName("name"),
+										},
 									},
 								},
 							},
@@ -167,9 +171,11 @@ func TestGenerateSortedColumnList(t *testing.T) {
 										Base:  Int,
 										Param: ColumnTypeParam(10),
 									},
-									Constraint: Constraint{
-										TableName:  "product",
-										ColumnName: "id",
+									Constraints: []Constraint{
+										{
+											TableName:  "product",
+											ColumnName: "id",
+										},
 									},
 								},
 							},
@@ -190,9 +196,11 @@ func TestGenerateSortedColumnList(t *testing.T) {
 										Base:  Varchar,
 										Param: ColumnTypeParam(255),
 									},
-									Constraint: Constraint{
-										TableName:  TableName("staff"),
-										ColumnName: ColumnName("name"),
+									Constraints: []Constraint{
+										{
+											TableName:  TableName("staff"),
+											ColumnName: ColumnName("name"),
+										},
 									},
 								},
 							},

@@ -77,9 +77,11 @@ func TestGetSchema(t *testing.T) {
 									Base:  model.Varchar,
 									Param: model.ColumnTypeParam(255),
 								},
-								Constraint: model.Constraint{
-									TableName:  model.TableName("customer"),
-									ColumnName: model.ColumnName("name"),
+								Constraints: []model.Constraint{
+									{
+										TableName:  model.TableName("customer"),
+										ColumnName: model.ColumnName("name"),
+									},
 								},
 							},
 							{

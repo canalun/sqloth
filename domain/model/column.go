@@ -73,7 +73,7 @@ type Column struct {
 	FullName      ColumnFullName
 	Type          ColumnType
 	AutoIncrement bool
-	Constraint    Constraint
+	Constraints   []Constraint
 }
 
 func NewColumn(name ColumnName, ct ColumnType) Column {
@@ -88,11 +88,11 @@ func NewColumnFullName(tn TableName, cn ColumnName) ColumnFullName {
 }
 
 func (c Column) HasConstraint() bool {
-	return string(c.Constraint.TableName)+string(c.Constraint.ColumnName) != ""
+	return len(c.Constraints) > 0
 }
 
 func (c *Column) SetConstraint(constraint Constraint) {
-	c.Constraint = constraint
+	c.Constraints = append(c.Constraints, constraint)
 }
 
 func (c Column) GenerateData(n int) []Value {

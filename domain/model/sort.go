@@ -68,8 +68,10 @@ func GenerateAdjacencyMatrix(schema Schema) AdjacencyMatrix {
 		for _, column := range table.Columns {
 			if column.HasConstraint() {
 				if i, ok := columnToIndex[string(table.Name)+"."+string(column.Name)]; ok {
-					if j, ok := columnToIndex[string(column.Constraint.TableName)+"."+string(column.Constraint.ColumnName)]; ok {
-						am[i][j] = 1
+					for _, constraint := range column.Constraints {
+						if j, ok := columnToIndex[string(constraint.TableName)+"."+string(constraint.ColumnName)]; ok {
+							am[i][j] = 1
+						}
 					}
 				}
 			}

@@ -50,7 +50,7 @@ func TestColumn_GenerateData(t *testing.T) {
 		FullName      ColumnFullName
 		Type          ColumnType
 		AutoIncrement bool
-		Constraint    Constraint
+		Constraints   []Constraint
 	}
 	type args struct {
 		n int
@@ -70,7 +70,7 @@ func TestColumn_GenerateData(t *testing.T) {
 					Base: Int,
 				},
 				AutoIncrement: true,
-				Constraint:    Constraint{},
+				Constraints:   []Constraint{},
 			},
 			args: args{n: 3},
 			want: []Value{Value(strconv.Itoa(0)), Value(strconv.Itoa(1)), Value(strconv.Itoa(2))},
@@ -83,7 +83,7 @@ func TestColumn_GenerateData(t *testing.T) {
 				FullName:      tt.fields.FullName,
 				Type:          tt.fields.Type,
 				AutoIncrement: tt.fields.AutoIncrement,
-				Constraint:    tt.fields.Constraint,
+				Constraints:   tt.fields.Constraints,
 			}
 			got := c.GenerateData(tt.args.n)
 			diff := cmp.Diff(got, tt.want)
