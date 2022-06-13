@@ -27,27 +27,31 @@ func TestGetSchema(t *testing.T) {
 						Name: "customer",
 						Columns: []model.Column{
 							{
-								Name: "id",
+								Name:     "id",
+								FullName: "customer.id",
 								Type: model.ColumnType{
 									Base:  model.Int,
 									Param: model.ColumnTypeParam(10),
 								},
 							},
 							{
-								Name: "created_at",
+								Name:     "created_at",
+								FullName: "customer.created_at",
 								Type: model.ColumnType{
 									Base: model.Timestamp,
 								},
 							},
 							{
-								Name: "name",
+								Name:     "name",
+								FullName: "customer.name",
 								Type: model.ColumnType{
 									Base:  model.Varchar,
 									Param: model.ColumnTypeParam(255),
 								},
 							},
 							{
-								Name: "material",
+								Name:     "material",
+								FullName: "customer.material",
 								Type: model.ColumnType{
 									Base: model.Json,
 								},
@@ -58,21 +62,24 @@ func TestGetSchema(t *testing.T) {
 						Name: "product",
 						Columns: []model.Column{
 							{
-								Name: "id",
+								Name:     "id",
+								FullName: "product.id",
 								Type: model.ColumnType{
 									Base:  model.Int,
 									Param: model.ColumnTypeParam(14),
 								},
 							},
 							{
-								Name: "name",
+								Name:     "name",
+								FullName: "product.name",
 								Type: model.ColumnType{
 									Base:  model.Varchar,
 									Param: model.ColumnTypeParam(255),
 								},
 							},
 							{
-								Name: "owner",
+								Name:     "owner",
+								FullName: "product.owner",
 								Type: model.ColumnType{
 									Base:  model.Varchar,
 									Param: model.ColumnTypeParam(255),
@@ -85,21 +92,24 @@ func TestGetSchema(t *testing.T) {
 								},
 							},
 							{
-								Name: "description",
+								Name:     "description",
+								FullName: "product.description",
 								Type: model.ColumnType{
 									Base:  model.Text,
 									Param: model.ColumnTypeParam(100),
 								},
 							},
 							{
-								Name: "stock",
+								Name:     "stock",
+								FullName: "product.stock",
 								Type: model.ColumnType{
 									Base:  model.Tinyint,
 									Param: model.ColumnTypeParam(1),
 								},
 							},
 							{
-								Name: "sale_day",
+								Name:     "sale_day",
+								FullName: "product.sale_day",
 								Type: model.ColumnType{
 									Base: model.Datetime,
 								},

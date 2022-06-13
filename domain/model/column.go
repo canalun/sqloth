@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 	"strconv"
+	"strings"
 )
 
 // TODO: reorder and reorganize source code
@@ -76,10 +77,12 @@ type Column struct {
 	Constraints   []Constraint
 }
 
-func NewColumn(name ColumnName, ct ColumnType) Column {
+func NewColumn(fullName ColumnFullName, ct ColumnType) Column {
+	name := strings.Split(string(fullName), ".")[1]
 	return Column{
-		Name: ColumnName(name),
-		Type: ct,
+		Name:     ColumnName(name),
+		FullName: fullName,
+		Type:     ct,
 	}
 }
 

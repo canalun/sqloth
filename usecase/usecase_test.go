@@ -34,21 +34,24 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 								Name: "customer",
 								Columns: []model.Column{
 									{
-										Name: "id",
+										Name:     "id",
+										FullName: "customer.id",
 										Type: model.ColumnType{
 											Base:  model.Int,
 											Param: model.ColumnTypeParam(3),
 										},
 									},
 									{
-										Name: "name",
+										Name:     "name",
+										FullName: "customer.name",
 										Type: model.ColumnType{
 											Base:  model.Varchar,
 											Param: model.ColumnTypeParam(3),
 										},
 									},
 									{
-										Name: "material",
+										Name:     "material",
+										FullName: "customer.material",
 										Type: model.ColumnType{
 											Base: model.Json,
 										},
@@ -59,14 +62,16 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 								Name: "product",
 								Columns: []model.Column{
 									{
-										Name: "id",
+										Name:     "id",
+										FullName: "product.id",
 										Type: model.ColumnType{
 											Base:  model.Int,
 											Param: model.ColumnTypeParam(3),
 										},
 									},
 									{
-										Name: "customeridname",
+										Name:     "customeridname",
+										FullName: "product.customeridname",
 										Type: model.ColumnType{
 											Base: model.Text,
 										},
@@ -82,7 +87,8 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 										},
 									},
 									{
-										Name: "stock",
+										Name:     "stock",
+										FullName: "product.stock",
 										Type: model.ColumnType{
 											Base:  model.Tinyint,
 											Param: model.ColumnTypeParam(1),

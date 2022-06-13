@@ -56,13 +56,16 @@ func (fd FileDriver) GetSchema() model.Schema {
 			_columnName := trimSqlQuery(strings.Fields(columnLines[0])[0])
 			columnName := model.ColumnName(_columnName)
 
+			_columnFullName := string(schema.LastTable().Name) + "." + string(columnName)
+			columnFullName := model.ColumnFullName(_columnFullName)
+
 			columnType, err := strToColumnType(strings.Fields(columnLines[0])[1])
 			if err != nil {
 				fmt.Println("unexpected data type")
 				return model.Schema{}
 			}
 
-			column := model.NewColumn(columnName, columnType)
+			column := model.NewColumn(columnFullName, columnType)
 			schema.LastTable().AddColumns(column)
 		}
 

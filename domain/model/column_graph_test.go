@@ -25,7 +25,8 @@ func TestGenerateColumnGraph(t *testing.T) {
 							Name: "customer",
 							Columns: []Column{
 								{
-									Name: "id",
+									Name:     "id",
+									FullName: "customer.id",
 									Type: ColumnType{
 										Base:  Int,
 										Param: ColumnTypeParam(10),
@@ -38,7 +39,8 @@ func TestGenerateColumnGraph(t *testing.T) {
 									},
 								},
 								{
-									Name: "name",
+									Name:     "name",
+									FullName: "customer.name",
 									Type: ColumnType{
 										Base:  Varchar,
 										Param: ColumnTypeParam(255),
@@ -50,14 +52,16 @@ func TestGenerateColumnGraph(t *testing.T) {
 							Name: "product",
 							Columns: []Column{
 								{
-									Name: "id",
+									Name:     "id",
+									FullName: "product.id",
 									Type: ColumnType{
 										Base:  Int,
 										Param: ColumnTypeParam(14),
 									},
 								},
 								{
-									Name: "owner",
+									Name:     "owner",
+									FullName: "product.owner",
 									Type: ColumnType{
 										Base:  Varchar,
 										Param: ColumnTypeParam(255),
@@ -84,7 +88,8 @@ func TestGenerateColumnGraph(t *testing.T) {
 				ColumnNodes: []ColumnNode{
 					ColumnNode{
 						column: Column{
-							Name: "id",
+							Name:     "id",
+							FullName: "customer.id",
 							Type: ColumnType{
 								Base:  Int,
 								Param: ColumnTypeParam(10),
@@ -101,7 +106,8 @@ func TestGenerateColumnGraph(t *testing.T) {
 					},
 					ColumnNode{
 						column: Column{
-							Name: "name",
+							Name:     "name",
+							FullName: "customer.name",
 							Type: ColumnType{
 								Base:  Varchar,
 								Param: ColumnTypeParam(255),
@@ -112,7 +118,8 @@ func TestGenerateColumnGraph(t *testing.T) {
 					},
 					ColumnNode{
 						column: Column{
-							Name: "id",
+							Name:     "id",
+							FullName: "product.id",
 							Type: ColumnType{
 								Base:  Int,
 								Param: ColumnTypeParam(14),
@@ -123,7 +130,8 @@ func TestGenerateColumnGraph(t *testing.T) {
 					},
 					ColumnNode{
 						column: Column{
-							Name: "owner",
+							Name:     "owner",
+							FullName: "product.owner",
 							Type: ColumnType{
 								Base:  Varchar,
 								Param: ColumnTypeParam(255),
