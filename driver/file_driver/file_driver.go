@@ -11,9 +11,10 @@ import (
 	"github.com/canalun/sqloth/domain/model"
 )
 
-var reForTable = regexp.MustCompile("(?m)^ *CREATE TABLE .*")
-var reForColumn = regexp.MustCompile("(?m)^ *`.*` *[^ ]+.*,")
-var reForColumnConstraint = regexp.MustCompile("(?m)^ *CONSTRAINT .*")
+var regexForTable = regexp.MustCompile("(?m)^ *CREATE TABLE .*")
+var regexForColumn = regexp.MustCompile("(?m)^ *`.*` *[^ ]+.*,")
+var regexForAutoIncrement = regexp.MustCompile("AUTO_INCREMENT")
+var regexForColumnConstraint = regexp.MustCompile("(?m)^ *CONSTRAINT .*")
 
 type FileDriver struct {
 	FilePath string
@@ -40,7 +41,7 @@ func (fd FileDriver) GetSchema() model.Schema {
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		tableLines := reForTable.FindStringSubmatch(line)
+		tableLines := regexForTable.FindStringSubmatch(line)
 		if len(tableLines) > 0 {
 			// assuming tableLines are like ["CREATE TABLE `name` ..."]
 			_tableName := trimSqlQuery(strings.Fields(tableLines[0])[2])
@@ -50,7 +51,7 @@ func (fd FileDriver) GetSchema() model.Schema {
 			schema.AddTable(table)
 		}
 
-		columnLines := reForColumn.FindStringSubmatch(line)
+		columnLines := regexForColumn.FindStringSubmatch(line)
 		if len(columnLines) > 0 {
 			// assuming columnLines are like ["  `name` type ..."]
 			_columnName := trimSqlQuery(strings.Fields(columnLines[0])[0])
@@ -66,10 +67,13 @@ func (fd FileDriver) GetSchema() model.Schema {
 			}
 
 			column := model.NewColumn(columnFullName, columnType)
+			if len(regexForAutoIncrement.FindStringSubmatch(columnLines[0])) > 0 {
+				column.SetAutoIncrement()
+			}
 			schema.LastTable().AddColumns(column)
 		}
 
-		columnKeyLines := reForColumnConstraint.FindStringSubmatch(line)
+		columnKeyLines := regexForColumnConstraint.FindStringSubmatch(line)
 		if len(columnKeyLines) > 0 {
 			// assuming columnLines are like [" CONSTRAINT `XX` FOREIGN KEY (`column_name`) REFERENCES `table_name` (`column_name`) ..."]
 			_boundedColumnName := trimSqlQuery(strings.Fields(columnKeyLines[0])[4])

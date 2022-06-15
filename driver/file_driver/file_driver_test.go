@@ -17,7 +17,7 @@ func TestGetSchema(t *testing.T) {
 		want   model.Schema
 	}{
 		{
-			name: "can get schema from sql schema file",
+			name: "can get schema from sql schema file with correct auto_increment settings",
 			fields: fields{
 				FilePath: "./testSchema.sql",
 			},
@@ -33,6 +33,7 @@ func TestGetSchema(t *testing.T) {
 									Base:  model.Int,
 									Param: model.ColumnTypeParam(10),
 								},
+								AutoIncrement: true,
 							},
 							{
 								Name:     "created_at",
@@ -68,6 +69,7 @@ func TestGetSchema(t *testing.T) {
 									Base:  model.Int,
 									Param: model.ColumnTypeParam(14),
 								},
+								AutoIncrement: true,
 							},
 							{
 								Name:     "name",

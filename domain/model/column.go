@@ -90,6 +90,10 @@ func NewColumnFullName(tn TableName, cn ColumnName) ColumnFullName {
 	return ColumnFullName(string(tn) + "." + string(cn))
 }
 
+func (c *Column) SetAutoIncrement() {
+	c.AutoIncrement = true
+}
+
 func (c Column) HasConstraint() bool {
 	return len(c.Constraints) > 0
 }
