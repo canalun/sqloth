@@ -40,6 +40,7 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 											Base:  model.Int,
 											Param: model.ColumnTypeParam(3),
 										},
+										AutoIncrement: true,
 									},
 									{
 										Name:     "name",
@@ -102,7 +103,7 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 				},
 			},
 			args: args{num: 3},
-			// TODO: mod want data
+			// TODO: mod want data (e.g. use properly auto_increment)
 			want: []string{""},
 		},
 	}
