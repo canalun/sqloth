@@ -24,10 +24,10 @@ func TestGenerateQuery(t *testing.T) {
 				},
 			},
 			want: []string{
-				"SET FOREIGN KEY = 0;",
+				"SET foreign_key_checks = 0;",
 				"INSERT INTO table1 VALUES ('table1-v1','table1-v2','table1-v3'),('table1-v4','table1-v5','table1-v6');",
 				"INSERT INTO table2 VALUES ('table2-v1','table2-v2','table2-v3'),('table2-v4','table2-v5','table2-v6');",
-				"SET FOREIGN KEY = 1;",
+				"SET foreign_key_checks = 1;",
 			},
 		},
 		{

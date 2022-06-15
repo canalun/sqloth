@@ -4,7 +4,7 @@ func GenerateQuery(rft map[TableName][]Record) []string {
 	if len(rft) == 0 {
 		return []string{}
 	}
-	re := []string{"SET FOREIGN KEY = 0;"}
+	re := []string{"SET foreign_key_checks = 0;"}
 	for tableName, records := range rft {
 		q := "INSERT INTO " + string(tableName) + " VALUES "
 		for _, record := range records {
@@ -13,7 +13,7 @@ func GenerateQuery(rft map[TableName][]Record) []string {
 		q = q[:len(q)-1] + ";"
 		re = append(re, q)
 	}
-	re = append(re, "SET FOREIGN KEY = 1;")
+	re = append(re, "SET foreign_key_checks = 1;")
 	return re
 }
 
