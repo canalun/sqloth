@@ -46,7 +46,7 @@ func generateRandomTinyint() string {
 
 func generateRandomDate() string {
 	min := time.Date(1900, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
-	max := time.Date(2200, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
+	max := time.Date(2037, 1, 0, 0, 0, 0, 0, time.UTC).Unix() //2038 problem for mysql timestamp
 	delta := max - min
 
 	sec := rand.Int63n(delta) + min
