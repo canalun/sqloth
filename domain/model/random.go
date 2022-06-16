@@ -13,6 +13,10 @@ var numChars = []rune("0123456789")
 
 var layout = "2006-01-02 15:04:05"
 
+//mysql int range
+var intMin = -2147483648
+var intMax = 2147483647
+
 func init() {
 	rand.Seed(time.Now().UnixNano())
 	chars = append(chars, lowerChars...)
@@ -29,6 +33,10 @@ func generateRandomString(n int) string {
 }
 
 func generateRandomInt(n int) string {
+	//intMaxとnの桁数で場合分け
+	rand.Seed(time.Now().UnixNano())
+	rand.Intn(intMax-intMin) + intMin
+
 	str := make([]rune, n)
 	for i := range str {
 		str[i] = numChars[rand.Intn(len(numChars))]
