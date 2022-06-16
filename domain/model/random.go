@@ -59,5 +59,5 @@ func generateRandomJson() string {
 	for i := range str {
 		str[i] = numChars[rand.Intn(len(numChars))]
 	}
-	return strings.Join([]string{`{\\"json\\":`, string(str), `}`}, "")
+	return strings.Join([]string{`{\\"json\\":"`, string(str), `"}`}, "")
 }
