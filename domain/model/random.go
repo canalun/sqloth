@@ -45,7 +45,7 @@ func generateRandomTinyint() string {
 }
 
 func generateRandomDate() string {
-	min := time.Date(1900, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
+	min := time.Date(1971, 1, 0, 0, 0, 0, 0, time.UTC).Unix() //the min of timestamp in mysql is 1970-01-01
 	max := time.Date(2037, 1, 0, 0, 0, 0, 0, time.UTC).Unix() //2038 problem for mysql timestamp
 	delta := max - min
 
