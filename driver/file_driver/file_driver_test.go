@@ -34,6 +34,7 @@ func TestGetSchema(t *testing.T) {
 									Param: model.ColumnTypeParam(10),
 								},
 								AutoIncrement: true,
+								Unsigned:      true,
 							},
 							{
 								Name:     "created_at",

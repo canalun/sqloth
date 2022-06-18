@@ -74,6 +74,7 @@ type Column struct {
 	FullName      ColumnFullName
 	Type          ColumnType
 	AutoIncrement bool
+	Unsigned      bool
 	Constraints   []Constraint
 }
 
@@ -92,6 +93,10 @@ func NewColumnFullName(tn TableName, cn ColumnName) ColumnFullName {
 
 func (c *Column) SetAutoIncrement() {
 	c.AutoIncrement = true
+}
+
+func (c *Column) SetUnsigned() {
+	c.Unsigned = true
 }
 
 func (c Column) HasConstraint() bool {

@@ -14,6 +14,7 @@ import (
 var regexForTable = regexp.MustCompile("(?m)^ *CREATE TABLE .*")
 var regexForColumn = regexp.MustCompile("(?m)^ *`.*` *[^ ]+.*,")
 var regexForAutoIncrement = regexp.MustCompile("AUTO_INCREMENT")
+var regexForUnsigned = regexp.MustCompile("UNSIGNED")
 var regexForColumnConstraint = regexp.MustCompile("(?m)^ *CONSTRAINT .*")
 
 type FileDriver struct {
@@ -69,6 +70,9 @@ func (fd FileDriver) GetSchema() model.Schema {
 			column := model.NewColumn(columnFullName, columnType)
 			if len(regexForAutoIncrement.FindStringSubmatch(columnLines[0])) > 0 {
 				column.SetAutoIncrement()
+			}
+			if len(regexForUnsigned.FindStringSubmatch(columnLines[0])) > 0 {
+				column.SetUnsigned()
 			}
 			schema.LastTable().AddColumns(column)
 		}
