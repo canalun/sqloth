@@ -178,7 +178,7 @@ func TestGenerateValuesForColumns(t *testing.T) {
 							if err != nil {
 								t.Errorf("cannot convert value to int; value: %v", v)
 							}
-							if n < 0 || n > 9 {
+							if !(intRangeMap[Int][0] <= n || n <= intRangeMap[Int][1]) {
 								t.Errorf("values of %v is out of range; idx: %v, value: %v", key, idx, v)
 							}
 						}

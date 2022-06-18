@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 func TestGenerateQuery(t *testing.T) {
@@ -30,20 +31,19 @@ func TestGenerateQuery(t *testing.T) {
 				"SET foreign_key_checks = 1;",
 			},
 		},
-		{
-			name: "return empty string from an empty map",
-			args: args{
-				rft: map[TableName][]Record{},
-			},
-			want: []string{},
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := GenerateQuery(tt.args.rft)
-			diff := cmp.Diff(got, tt.want)
-			if diff != "" {
-				t.Errorf("GenerateQuery(); -got, +want\n%v", diff)
+			diff1 := cmp.Diff(got[0], tt.want[0])
+			diff2 := cmp.Diff(got[len(got)-1], tt.want[len(tt.want)-1])
+			diff3 := cmp.Diff(got[1:len(got)-1], tt.want[1:len(tt.want)-1],
+				cmpopts.SortSlices(func(i, j string) bool {
+					return i < j
+				}),
+			)
+			if diff1+diff2+diff3 != "" {
+				t.Errorf("GenerateQuery(); -got, +want\n%v\n\n%v\n\n%v", diff1, diff2, diff3)
 			}
 		})
 	}
