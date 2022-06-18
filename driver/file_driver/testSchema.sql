@@ -1,5 +1,5 @@
 CREATE TABLE `customer` (
-  `id` int(10) AUTO_INCREMENT,
+  `id` int(10) UNSIGNED AUTO_INCREMENT,
   `created_at` timestamp,
   `name` varchar(255) DEFAULT NULL,
   `material` JSON,
