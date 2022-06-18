@@ -12,12 +12,16 @@ var lowerChars = []rune("abcdefghijklmnopqrstuvwxyz")
 var capitalChars = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 var numChars = []rune("0123456789")
 
-var layout = "2006-01-02 15:04:05"
+const layout = "2006-01-02 15:04:05"
 
 //mysql int range
-// var intMin = -2147483648
-// var intMax = 2147483647
-var tinyIntMax = 127
+var intRangeMap = map[ColumnTypeBase][]int{
+	Tinyint:   {-128, 127},
+	Smallint:  {-32768, 32767},
+	Mediumint: {-8388608, 8388607},
+	Int:       {-2147483648, 2147483647},
+	Bigint:    {-9223372036854775808, 9223372036854775807},
+}
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
@@ -34,18 +38,15 @@ func generateRandomString(n int) string {
 	return string(str)
 }
 
-//TODO: mod arg handling
-func generateRandomInt(n int) string {
-	//TODO: URGENT: mod range of rand considering intMin, intMax, n, IntType!!!
-	m := rand.Intn(tinyIntMax)
+func generateRandomInt(t ColumnTypeBase, unsigned bool) string {
+	var m int
+	switch unsigned {
+	case true:
+		m = rand.Intn(intRangeMap[t][1])
+	case false:
+		m = rand.Intn(intRangeMap[t][1]-intRangeMap[t][0]) + intRangeMap[t][0]
+	}
 	return strconv.Itoa(m)
-
-	//TODO: deprecated logic
-	// str := make([]rune, n)
-	// for i := range str {
-	// 	str[i] = numChars[rand.Intn(len(numChars))]
-	// }
-	// return string(str)
 }
 
 func generateRandomTinyint() string {

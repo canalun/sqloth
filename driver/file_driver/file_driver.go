@@ -72,7 +72,9 @@ func (fd FileDriver) GetSchema() model.Schema {
 				column.SetAutoIncrement()
 			}
 			if len(regexForUnsigned.FindStringSubmatch(columnLines[0])) > 0 {
-				column.SetUnsigned()
+				column.SetUnsigned(true)
+			} else {
+				column.SetUnsigned(false)
 			}
 			schema.LastTable().AddColumns(column)
 		}

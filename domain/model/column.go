@@ -21,8 +21,11 @@ const (
 	Varbinary  ColumnTypeBase = "varbinary"
 	Mediumblob ColumnTypeBase = "mediumblob"
 	Text       ColumnTypeBase = "text"
-	Int        ColumnTypeBase = "int"
 	Tinyint    ColumnTypeBase = "tinyint"
+	Smallint   ColumnTypeBase = "smallint"
+	Mediumint  ColumnTypeBase = "mediumint"
+	Int        ColumnTypeBase = "int"
+	Bigint     ColumnTypeBase = "bigint"
 	Timestamp  ColumnTypeBase = "timestamp"
 	Datetime   ColumnTypeBase = "datetime"
 	Json       ColumnTypeBase = "json"
@@ -95,8 +98,8 @@ func (c *Column) SetAutoIncrement() {
 	c.AutoIncrement = true
 }
 
-func (c *Column) SetUnsigned() {
-	c.Unsigned = true
+func (c *Column) SetUnsigned(b bool) {
+	c.Unsigned = b
 }
 
 func (c Column) HasConstraint() bool {
@@ -128,7 +131,7 @@ func (c Column) GenerateRandomData() ColumnData {
 	case Varchar, Text, Varbinary, Mediumblob:
 		data = generateRandomString(int(c.Type.Param))
 	case Int:
-		data = generateRandomInt(int(c.Type.Param))
+		data = generateRandomInt(c.Type.Base, c.Unsigned)
 	case Tinyint:
 		data = generateRandomTinyint()
 	case Timestamp, Datetime:
