@@ -90,7 +90,7 @@ func Test_listColumnsForQuery(t *testing.T) {
 					},
 				},
 			},
-			want: []string{"test1", "test3"},
+			want: []string{"`test1`", "`test3`"},
 		},
 	}
 	for _, tt := range tests {
