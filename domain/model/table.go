@@ -14,10 +14,6 @@ func NewTable(name TableName, columns []Column) Table {
 	}
 }
 
-func (t *Table) AddColumns(column Column) {
-	t.Columns = append(t.Columns, column)
-}
-
 func GenerateRecordsForTables(vfc map[ColumnFullName][]Value, schema Schema, n int) map[TableName][]Record {
 	rft := map[TableName][]Record{}
 	for _, table := range schema.Tables {
