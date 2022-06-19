@@ -2,7 +2,6 @@ package model
 
 import (
 	"errors"
-	"strconv"
 	"strings"
 )
 
@@ -115,7 +114,7 @@ func (c Column) GenerateData(n int) []Value {
 	switch c.AutoIncrement {
 	case true:
 		for i := 0; i < n; i++ {
-			d = append(d, Value(strconv.Itoa(i)))
+			d = append(d, Value("NULL"))
 		}
 	default:
 		for i := 0; i < n; i++ {

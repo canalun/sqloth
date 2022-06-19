@@ -62,7 +62,7 @@ func TestColumn_GenerateData(t *testing.T) {
 		want   []Value
 	}{
 		{
-			name: "return int slice {0...n} when AutoIncrement is true",
+			name: "return slice of 'NULL' when AutoIncrement is true",
 			fields: fields{
 				Name:     "test",
 				FullName: "test",
@@ -73,7 +73,7 @@ func TestColumn_GenerateData(t *testing.T) {
 				Constraints:   []Constraint{},
 			},
 			args: args{n: 3},
-			want: []Value{Value(strconv.Itoa(0)), Value(strconv.Itoa(1)), Value(strconv.Itoa(2))},
+			want: []Value{Value("NULL"), Value("NULL"), Value("NULL")},
 		},
 	}
 	for _, tt := range tests {
