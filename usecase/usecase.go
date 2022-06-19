@@ -22,7 +22,7 @@ func (u Usecase) GenerateQueryOfDummyData(num int) []string {
 	columnGraph := model.GenerateColumnGraph(schema)
 	valuesForColumns := model.GenerateValuesForColumns(columnGraph, num)
 	recordsForTables := model.GenerateRecordsForTables(valuesForColumns, schema, num)
-	queries := model.GenerateQuery(recordsForTables)
+	queries := model.GenerateQuery(recordsForTables, schema)
 
 	return queries
 }

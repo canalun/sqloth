@@ -1,13 +1,15 @@
 package model
 
-func GenerateQuery(rft map[TableName][]Record) []string {
+import "strings"
+
+func GenerateQuery(rft map[TableName][]Record, schema Schema) []string {
 	if len(rft) == 0 {
 		return []string{}
 	}
 	re := []string{"SET foreign_key_checks = 0;"}
-	for tableName, records := range rft {
-		q := "INSERT INTO " + string(tableName) + " VALUES "
-		for _, record := range records {
+	for _, table := range schema.Tables {
+		q := "INSERT INTO " + string(table.Name) + "(" + strings.Join(listColumnsForQuery(table), ", ") + ")" + " VALUES "
+		for _, record := range rft[table.Name] {
 			q += querizeRecord(record)
 		}
 		q = q[:len(q)-1] + ";"
@@ -23,5 +25,15 @@ func querizeRecord(record Record) string {
 		re += "'" + string(v) + "',"
 	}
 	re = re[:len(re)-1] + "),"
+	return re
+}
+
+func listColumnsForQuery(table Table) []string {
+	re := []string{}
+	for _, c := range table.Columns {
+		if !c.AutoIncrement {
+			re = append(re, string(c.Name))
+		}
+	}
 	return re
 }
