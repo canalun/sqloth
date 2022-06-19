@@ -69,7 +69,7 @@ func (fd FileDriver) GetSchema() model.Schema {
 
 			column := model.NewColumn(columnFullName, columnType)
 			if len(regexForAutoIncrement.FindStringSubmatch(columnLines[0])) > 0 {
-				column.SetAutoIncrement(true)
+				column.SetAutoIncrement()
 			}
 			if len(regexForUnsigned.FindStringSubmatch(columnLines[0])) > 0 {
 				column.SetUnsigned(true)
