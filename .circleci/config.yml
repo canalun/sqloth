@@ -6,8 +6,7 @@ jobs:
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
-      - checkout:
-          path: ~/go/src/github.com/canalun/sqloth
+      - checkout
       - run: mkdir -p $TEST_RESULTS
       - run:
           name: Run unit tests
