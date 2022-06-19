@@ -1,33 +1,28 @@
-version: 2
+version: 2.2
 jobs:
-  build:
+  test_and_build:
     docker:
       - image: cimg/go:1.18
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD
-    parallelism: 2
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
-      - checkout
+      - checkout:
+          path: ~/go/src/github.com/canalun/sqloth
       - run: mkdir -p $TEST_RESULTS
-      - restore_cache:
-          keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
       - run:
           name: Run unit tests
           command: make test
       - run:
           name: Build App
           command: go build
-      - store_artifacts: # upload test summary for display in Artifacts
+      - store_artifacts:
           path: /tmp/test-results
           destination: raw-test-output
       - store_test_results:
           path: /tmp/test-results
+
 workflows:
-  version: 2
+  version: 2.2
   build-workflow:
     jobs:
-      - build
+      - test_and_build
