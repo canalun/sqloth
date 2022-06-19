@@ -4,3 +4,8 @@ generate-mock:
 
 test:
 	go test -v ./...
+
+run-ci:
+	circleci config process .circleci/config.yml > process.yml
+	circleci local execute -c process.yml --job test_and_build
+	rm process.yml

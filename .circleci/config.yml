@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   test_and_build:
     docker:
-      - image: cimg/go:1.18
+      - image: circleci/golang
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
