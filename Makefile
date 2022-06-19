@@ -3,7 +3,7 @@ generate-mock:
 	mockgen -destination=./domain/driver/mock_driver/mock_driver.go -package=mock_driver github.com/canalun/sqloth/domain/driver Driver
 
 test:
-	go test -v ./...
+	gotestsum --format pkgname
 
 run-ci:
 	circleci config process .circleci/config.yml > process.yml
