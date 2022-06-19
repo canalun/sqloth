@@ -14,7 +14,7 @@ import (
 var regexForTable = regexp.MustCompile("(?m)^ *CREATE TABLE .*")
 var regexForColumn = regexp.MustCompile("(?m)^ *`.*` *[^ ]+.*,")
 var regexForAutoIncrement = regexp.MustCompile("AUTO_INCREMENT")
-var regexForUnsigned = regexp.MustCompile("UNSIGNED")
+var regexForUnsigned = regexp.MustCompile("(UNSIGNED)|(Unsigned)|(unsigned)")
 var regexForColumnConstraint = regexp.MustCompile("(?m)^ *CONSTRAINT .*")
 
 type FileDriver struct {
