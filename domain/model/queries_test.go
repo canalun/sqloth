@@ -47,8 +47,8 @@ func TestGenerateQuery(t *testing.T) {
 			},
 			want: []string{
 				"SET foreign_key_checks = 0;",
-				"INSERT INTO table1(table1-column1, table1-column2, table1-column3) VALUES ('table1-v1','table1-v2','table1-v3'),('table1-v4','table1-v5','table1-v6');",
-				"INSERT INTO table2(table2-column1, table2-column3) VALUES ('table2-v1','table2-v2'),('table2-v4','table2-v5');",
+				"INSERT INTO table1(`table1-column1`, `table1-column2`, `table1-column3`) VALUES ('table1-v1','table1-v2','table1-v3'),('table1-v4','table1-v5','table1-v6');",
+				"INSERT INTO table2(`table2-column1`, `table2-column3`) VALUES ('table2-v1','table2-v2'),('table2-v4','table2-v5');",
 				"SET foreign_key_checks = 1;",
 			},
 		},

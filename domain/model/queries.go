@@ -32,7 +32,7 @@ func listColumnsForQuery(table Table) []string {
 	re := []string{}
 	for _, c := range table.Columns {
 		if !c.AutoIncrement {
-			re = append(re, string(c.Name))
+			re = append(re, "`"+string(c.Name)+"`")
 		}
 	}
 	return re
