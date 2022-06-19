@@ -18,10 +18,10 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 		num int
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   []string
+		name     string
+		fields   fields
+		args     args
+		assertFn func([]string)
 	}{
 		{
 			name: "can generate query of dummy data from sql schema file with constraints",
@@ -103,8 +103,17 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 				},
 			},
 			args: args{num: 3},
-			// TODO: mod want data (e.g. use properly auto_increment)
-			want: []string{""},
+			//TODO: mod assertFn
+			assertFn: func(s []string) {
+				diff := cmp.Diff(s[0], "SET foreign_key_checks = 0;")
+				if diff != "" {
+					t.Errorf(diff)
+				}
+				diff = cmp.Diff(s[len(s)-1], "SET foreign_key_checks = 1;")
+				if diff != "" {
+					t.Errorf(diff)
+				}
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -115,10 +124,7 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 				driver: tt.fields.driver(ctrl),
 			}
 			got := u.GenerateQueryOfDummyData(tt.args.num)
-			diff := cmp.Diff(got, tt.want)
-			if diff != "" {
-				t.Error("-:got, +:want", diff)
-			}
+			tt.assertFn(got)
 		})
 	}
 }
