@@ -93,8 +93,8 @@ func NewColumnFullName(tn TableName, cn ColumnName) ColumnFullName {
 	return ColumnFullName(string(tn) + "." + string(cn))
 }
 
-func (c *Column) SetAutoIncrement() {
-	c.AutoIncrement = true
+func (c *Column) SetAutoIncrement(b bool) {
+	c.AutoIncrement = b
 }
 
 func (c *Column) SetUnsigned(b bool) {
