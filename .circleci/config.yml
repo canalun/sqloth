@@ -10,7 +10,7 @@ jobs:
       - run: mkdir -p $TEST_RESULTS
       - run:
           name: Run unit tests
-          command: make test
+          command: gotestsum --junitfile /tmp/test-results/unit-tests.xml
       - run:
           name: Build App
           command: go build
