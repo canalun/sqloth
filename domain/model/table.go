@@ -25,7 +25,10 @@ func GenerateRecordsForTables(vfc map[ColumnFullName][]Value, schema Schema, n i
 		for i := 0; i < n; i++ {
 			var record Record
 			for _, column := range table.Columns {
-				record = append(record, vfc[column.FullName][i])
+				//skip auto increment column
+				if !column.AutoIncrement {
+					record = append(record, vfc[column.FullName][i])
+				}
 			}
 			records = append(records, record)
 		}
