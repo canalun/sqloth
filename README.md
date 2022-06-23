@@ -10,7 +10,7 @@ offline sql faker generator
 # usage
 please download the binary and run the below!!
 
-```sqloth -f ./path/to/your/schema.sql -n [the # of records you want]```
+```./sqloth -f ./path/to/your/schema.sql -n [the # of records you want]```
 
 the below is the example input and output.
 
