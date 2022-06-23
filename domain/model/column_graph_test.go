@@ -7,6 +7,38 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+func TestNewAdjacencyMatrix(t *testing.T) {
+	type args struct {
+		n int
+	}
+	tests := []struct {
+		name string
+		args args
+		want AdjacencyMatrix
+	}{
+		{
+			name: "return n*n zero matrix",
+			args: args{n: 5},
+			want: AdjacencyMatrix{
+				{0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0},
+				{0, 0, 0, 0, 0},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := newAdjacencyMatrix(tt.args.n)
+			diff := cmp.Diff(got, tt.want)
+			if diff != "" {
+				t.Error("-:got, +:want", diff)
+			}
+		})
+	}
+}
+
 func TestGenerateColumnGraph(t *testing.T) {
 	type args struct {
 		schema Schema

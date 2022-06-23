@@ -4,9 +4,22 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Graph structure of columns expressed by adjacency matrix and nodes
 type ColumnGraph struct {
 	AdjacencyMatrix AdjacencyMatrix
 	ColumnNodes     []ColumnNode
+}
+
+type AdjacencyMatrix [][]int
+
+func newAdjacencyMatrix(n int) AdjacencyMatrix {
+	am := make(AdjacencyMatrix, 0, n)
+	i := 0
+	for i < n {
+		am = append(am, make([]int, n))
+		i++
+	}
+	return am
 }
 
 type ColumnNode struct {
