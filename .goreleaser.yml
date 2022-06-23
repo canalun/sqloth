@@ -1,0 +1,10 @@
+builds:
+  - main: main.go
+    binary: sqloth
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
