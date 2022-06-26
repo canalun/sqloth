@@ -1,6 +1,6 @@
 
 # sqloth
-It is an offline SQL faker generator!!
+It is an offline SQL dummy data generator!!
 *"Wanna test using dummy SQL data? You'll like SQLOTH...!"*
 ## 🎉 Features 🎉
 - completely offline, which means you can use confidential schema
