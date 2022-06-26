@@ -6,7 +6,7 @@
 - This project follows [Go Community Code of Conduct](https://go.dev/conduct)
 
 ## Issues
-- When you report a new issue, please clearly mention the following two points at least 🎉
+- When you report a new issue, please clearly mention the following three points at least 🎉
   - what happened/is happening
   - why that is a problem
   - solution hypothesis
