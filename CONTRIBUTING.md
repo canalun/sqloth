@@ -1,4 +1,5 @@
 # Contribution Guide
+Thanks for your great contribution!!
 
 ## Principles
 - Let's be creative and collaborative👶
@@ -24,5 +25,3 @@
 ```bash
 make test
 ```
-
-Thanks for your great contribution!!
