@@ -14,4 +14,15 @@
 ## Pull Request
 - If possible, please report an issue at first😉
 - But the project always welcome your collaborative pull request!
-- **Please fork the develop branch to create PR.**
+- **Please fork the develop branch to create PR🎉**
+
+## Before Pushing...
+### Unit Test
+- Please write unit tests using go test
+- If you define new interfaces, please generate mock by editing ```make gen-mock```commands and running it.
+- At last, please check if your change pass all the tests by running the below locally.
+```bash
+make test
+```
+
+Thanks for your great contribution!!
