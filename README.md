@@ -42,4 +42,4 @@ SET foreign_key_checks = 1;
 ```
 ## 🌟 Contribution 🌟
 - Let's be creative and collaborative👶
-- Please read [CONTRIBUTING.md](https://github.com/canalun/sqloth/CONTRIBUTING.md) for the details😉
+- Please read [CONTRIBUTING.md](https://github.com/canalun/sqloth/blob/main/CONTRIBUTING.md) for the details😉
