@@ -40,7 +40,7 @@ func StrToColumnTypeBase(str string) (ColumnTypeBase, error) {
 		return Mediumblob, nil
 	case string(Text):
 		return Text, nil
-	case string(Int):
+	case string(Smallint), string(Int), string(Mediumint), string(Bigint):
 		return Int, nil
 	case string(Tinyint):
 		return Tinyint, nil
