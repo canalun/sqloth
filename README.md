@@ -43,3 +43,51 @@ SET foreign_key_checks = 1;
 ## 🌟 Contribution 🌟
 - Let's be creative and collaborative👶
 - Please read [CONTRIBUTING.md](https://github.com/canalun/sqloth/blob/main/CONTRIBUTING.md) for the details😉
+
+## ✅ Support Information 🚫
+### RDBMS
+| RDBMS | Supported |
+| --- | --- |
+| MySQL | ✅ Yes |
+| Oracle | 🚫 No |
+| PostgreSQL | 🚫 No |
+
+### Type Attributes
+| Type Attributes | Supported |
+| --- | --- |
+| UNSIGNED | ✅ Yes |
+| AUTO_INCREMENT | ✅ Yes |
+| ZEROFILL | 🚫 No |
+| CHECK | 🚫 No |
+
+### Data Types
+| Data Category | Data Type | Supported |
+| --- | --- | --- |
+| Numeric | INTEGER | ✅ Yes |
+|  | TINYINT | ✅ Yes |
+|  | SMALLINT | ✅ Yes |
+|  | MEDIUMINT | ✅ Yes |
+|  | INT | ✅ Yes |
+|  | BIGINT | ✅ Yes |
+|  | DECIMAL | 🚫 No |
+|  | NUMERIC | 🚫 No |
+|  | FLOAT | 🚫 No |
+|  | DOUBLE | 🚫 No |
+|  | BIT | 🚫 No |
+|  | DOUBLE | 🚫 No |
+| Date&Time | DATETIME | ✅ Yes |
+|  | TIMESTAMP | ✅ Yes |
+|  | DATE | 🚫 No |
+|  | TIME | 🚫 No |
+|  | YEAR | 🚫 No |
+| String | VARCHAR | ✅ Yes |
+|  | CHAR | 🚫 No |
+|  | VARBINARY | ✅ Yes |
+|  | BINARY | 🚫 No |
+|  | TEXT | ✅ Yes |
+|  | BLOB | 🚫 No |
+|  | ENUM | 🚫 No |
+|  | SET | 🚫 No |
+| JSON | JSON | ✅ Yes |
+| Spatial | any spatial type | 🚫 No |
+
