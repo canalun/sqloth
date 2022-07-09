@@ -2,6 +2,15 @@ package model
 
 import "strings"
 
+// Value is literally a value of a column.
+type Value string
+
+// Record is a set of Value, that is "(XX, XX, ....)" in SQL query.
+type Record []Value
+
+// Query is string as an actually executable SQL query.
+type Query string
+
 func GenerateQuery(rft map[TableName][]Record, schema Schema) []string {
 	if len(rft) == 0 {
 		return []string{}
