@@ -39,14 +39,14 @@ func TestNewAdjacencyMatrix(t *testing.T) {
 	}
 }
 
-func TestGenerateColumnGraph(t *testing.T) {
+func TestGenerateSchemaGraph(t *testing.T) {
 	type args struct {
 		schema Schema
 	}
 	tests := []struct {
 		name string
 		args args
-		want ColumnGraph
+		want SchemaGraph
 	}{
 		{
 			name: "generate correct column graph",
@@ -110,7 +110,7 @@ func TestGenerateColumnGraph(t *testing.T) {
 					},
 				},
 			},
-			want: ColumnGraph{
+			want: SchemaGraph{
 				AdjacencyMatrix: AdjacencyMatrix{
 					{0, 0, 1, 0},
 					{0, 0, 0, 0},
@@ -184,16 +184,16 @@ func TestGenerateColumnGraph(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := GenerateColumnGraph(tt.args.schema)
+			got := GenerateSchemaGraph(tt.args.schema)
 			diff := cmp.Diff(got, tt.want, cmp.AllowUnexported(ColumnNode{}))
 			if diff != "" {
-				t.Errorf("GenerateColumnGraph(); -got, +want\n%v", diff)
+				t.Errorf("GenerateSchemaGraph(); -got, +want\n%v", diff)
 			}
 		})
 	}
 }
 
-func TestColumnGraph_isAllDone(t *testing.T) {
+func TestSchemaGraph_isAllDone(t *testing.T) {
 	type fields struct {
 		ColumnNodes []ColumnNode
 	}
@@ -233,17 +233,17 @@ func TestColumnGraph_isAllDone(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cg := ColumnGraph{
+			cg := SchemaGraph{
 				ColumnNodes: tt.fields.ColumnNodes,
 			}
 			if got := cg.isAllDone(); got != tt.want {
-				t.Errorf("ColumnGraph.isAllDone() = %v, want %v", got, tt.want)
+				t.Errorf("SchemaGraph.isAllDone() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestColumnGraph_HasParentNodes(t *testing.T) {
+func TestSchemaGraph_HasParentNodes(t *testing.T) {
 	type fields struct {
 		AdjacencyMatrix AdjacencyMatrix
 	}
@@ -288,22 +288,22 @@ func TestColumnGraph_HasParentNodes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cg := ColumnGraph{
+			cg := SchemaGraph{
 				AdjacencyMatrix: tt.fields.AdjacencyMatrix,
 			}
 			got, err := cg.HasParentNodes(tt.args.i)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("ColumnGraph.HasParentNodes() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("SchemaGraph.HasParentNodes() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("ColumnGraph.HasParentNodes() = %v, want %v", got, tt.want)
+				t.Errorf("SchemaGraph.HasParentNodes() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestColumnGraph_IsParentNodesAreAllDone(t *testing.T) {
+func TestSchemaGraph_IsParentNodesAreAllDone(t *testing.T) {
 	type fields struct {
 		AdjacencyMatrix AdjacencyMatrix
 		ColumnNodes     []ColumnNode
@@ -361,23 +361,23 @@ func TestColumnGraph_IsParentNodesAreAllDone(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cg := ColumnGraph{
+			cg := SchemaGraph{
 				AdjacencyMatrix: tt.fields.AdjacencyMatrix,
 				ColumnNodes:     tt.fields.ColumnNodes,
 			}
 			got, err := cg.IsParentNodesAreAllDone(tt.args.i)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("ColumnGraph.IsParentNodesAreAllDone() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("SchemaGraph.IsParentNodesAreAllDone() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("ColumnGraph.IsParentNodesAreAllDone() = %v, want %v", got, tt.want)
+				t.Errorf("SchemaGraph.IsParentNodesAreAllDone() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestColumnGraph_ParentNodeIndexes(t *testing.T) {
+func TestSchemaGraph_ParentNodeIndexes(t *testing.T) {
 	type fields struct {
 		AdjacencyMatrix AdjacencyMatrix
 	}
@@ -422,22 +422,22 @@ func TestColumnGraph_ParentNodeIndexes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cg := ColumnGraph{
+			cg := SchemaGraph{
 				AdjacencyMatrix: tt.fields.AdjacencyMatrix,
 			}
 			got, err := cg.ParentNodeIndexes(tt.args.i)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("ColumnGraph.ParentNodeIndexes() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("SchemaGraph.ParentNodeIndexes() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ColumnGraph.ParentNodeIndexes() = %v, want %v", got, tt.want)
+				t.Errorf("SchemaGraph.ParentNodeIndexes() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestColumnGraph_HasChildrenNodes(t *testing.T) {
+func TestSchemaGraph_HasChildrenNodes(t *testing.T) {
 	type fields struct {
 		AdjacencyMatrix AdjacencyMatrix
 	}
@@ -482,22 +482,22 @@ func TestColumnGraph_HasChildrenNodes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cg := ColumnGraph{
+			cg := SchemaGraph{
 				AdjacencyMatrix: tt.fields.AdjacencyMatrix,
 			}
 			got, err := cg.HasChildrenNodes(tt.args.i)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("ColumnGraph.HasChildrenNodes() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("SchemaGraph.HasChildrenNodes() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("ColumnGraph.HasChildrenNodes() = %v, want %v", got, tt.want)
+				t.Errorf("SchemaGraph.HasChildrenNodes() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestColumnGraph_ChildrenNodeIndexes(t *testing.T) {
+func TestSchemaGraph_ChildrenNodeIndexes(t *testing.T) {
 	type fields struct {
 		AdjacencyMatrix AdjacencyMatrix
 	}
@@ -542,16 +542,16 @@ func TestColumnGraph_ChildrenNodeIndexes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cg := ColumnGraph{
+			cg := SchemaGraph{
 				AdjacencyMatrix: tt.fields.AdjacencyMatrix,
 			}
 			got, err := cg.ChildrenNodeIndexes(tt.args.i)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("ColumnGraph.ChildrenNodeIndexes() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("SchemaGraph.ChildrenNodeIndexes() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ColumnGraph.ChildrenNodeIndexes() = %v, want %v", got, tt.want)
+				t.Errorf("SchemaGraph.ChildrenNodeIndexes() = %v, want %v", got, tt.want)
 			}
 		})
 	}

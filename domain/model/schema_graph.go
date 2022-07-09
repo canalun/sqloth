@@ -4,8 +4,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Graph structure of columns expressed by adjacency matrix and nodes
-type ColumnGraph struct {
+// Sqloth grasps schema structure as a graph of columns.
+// The graph is expressed as nodes and the adjacency matrix.
+type SchemaGraph struct {
 	AdjacencyMatrix AdjacencyMatrix
 	ColumnNodes     []ColumnNode
 }
@@ -40,7 +41,7 @@ func (cn ColumnNode) GetColumn() Column {
 	return cn.column
 }
 
-func GenerateColumnGraph(schema Schema) ColumnGraph {
+func GenerateSchemaGraph(schema Schema) SchemaGraph {
 	columnNodes := []ColumnNode{}
 	columnToIndex := map[string]int{}
 	i := 0
@@ -71,13 +72,13 @@ func GenerateColumnGraph(schema Schema) ColumnGraph {
 		}
 	}
 
-	return ColumnGraph{
+	return SchemaGraph{
 		AdjacencyMatrix: am,
 		ColumnNodes:     columnNodes,
 	}
 }
 
-func (cg ColumnGraph) isAllDone() bool {
+func (cg SchemaGraph) isAllDone() bool {
 	for _, cn := range cg.ColumnNodes {
 		if !cn.isDone {
 			return false
@@ -87,7 +88,7 @@ func (cg ColumnGraph) isAllDone() bool {
 }
 
 //TODO: adopt error handling such as Stacktrace
-func (cg ColumnGraph) HasParentNodes(i int) (bool, error) {
+func (cg SchemaGraph) HasParentNodes(i int) (bool, error) {
 	if i >= len(cg.AdjacencyMatrix) {
 		return false, errors.New("invalid index")
 	}
@@ -99,7 +100,7 @@ func (cg ColumnGraph) HasParentNodes(i int) (bool, error) {
 	return false, nil
 }
 
-func (cg ColumnGraph) IsParentNodesAreAllDone(i int) (bool, error) {
+func (cg SchemaGraph) IsParentNodesAreAllDone(i int) (bool, error) {
 	if i >= len(cg.AdjacencyMatrix) {
 		return false, errors.New("invalid index")
 	}
@@ -113,7 +114,7 @@ func (cg ColumnGraph) IsParentNodesAreAllDone(i int) (bool, error) {
 	return true, nil
 }
 
-func (cg ColumnGraph) ParentNodeIndexes(i int) ([]int, error) {
+func (cg SchemaGraph) ParentNodeIndexes(i int) ([]int, error) {
 	if i >= len(cg.AdjacencyMatrix) {
 		return []int{}, errors.New("invalid index")
 	}
@@ -126,7 +127,7 @@ func (cg ColumnGraph) ParentNodeIndexes(i int) ([]int, error) {
 	return parentNodeIndexes, nil
 }
 
-func (cg ColumnGraph) HasChildrenNodes(i int) (bool, error) {
+func (cg SchemaGraph) HasChildrenNodes(i int) (bool, error) {
 	if i >= len(cg.AdjacencyMatrix) {
 		return false, errors.New("invalid index")
 	}
@@ -138,7 +139,7 @@ func (cg ColumnGraph) HasChildrenNodes(i int) (bool, error) {
 	return false, nil
 }
 
-func (cg ColumnGraph) ChildrenNodeIndexes(i int) ([]int, error) {
+func (cg SchemaGraph) ChildrenNodeIndexes(i int) ([]int, error) {
 	if i >= len(cg.AdjacencyMatrix) {
 		return []int{}, errors.New("invalid index")
 	}

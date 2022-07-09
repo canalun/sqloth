@@ -147,7 +147,7 @@ func TestColumn_GenerateData(t *testing.T) {
 
 func TestGenerateValuesForColumns(t *testing.T) {
 	type args struct {
-		cg ColumnGraph
+		cg SchemaGraph
 		n  int
 	}
 	tests := []struct {
@@ -158,7 +158,7 @@ func TestGenerateValuesForColumns(t *testing.T) {
 		{
 			name: "return map of values for columns considering foreign keys",
 			args: args{
-				cg: ColumnGraph{
+				cg: SchemaGraph{
 					AdjacencyMatrix: AdjacencyMatrix{
 						{0, 0, 0, 1},
 						{0, 0, 0, 0},

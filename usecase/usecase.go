@@ -19,8 +19,8 @@ func NewUsecase(driver driver.Driver) Usecase {
 func (u Usecase) GenerateQueryOfDummyData(num int) []string {
 	schema := u.driver.GetSchema()
 
-	columnGraph := model.GenerateColumnGraph(schema)
-	valuesForColumns := model.GenerateValuesForColumns(columnGraph, num)
+	schemaGraph := model.GenerateSchemaGraph(schema)
+	valuesForColumns := model.GenerateValuesForColumns(schemaGraph, num)
 	recordsForTables := model.GenerateRecordsForTables(valuesForColumns, schema, num)
 	queries := model.GenerateQuery(recordsForTables, schema)
 

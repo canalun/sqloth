@@ -180,7 +180,7 @@ func (c Column) GenerateRandomData() ColumnData {
 
 //TODO: better to be defined as a method of map[ColumnFullName][]Value?
 //TODO: shuffle values. currently, values with foreignKeys are just simple sum of strings in the order.
-func GenerateValuesForColumns(cg ColumnGraph, n int) map[ColumnFullName][]Value {
+func GenerateValuesForColumns(cg SchemaGraph, n int) map[ColumnFullName][]Value {
 	dict := map[ColumnFullName][]Value{}
 	for i := range cg.ColumnNodes {
 		if !cg.isAllDone() {
@@ -191,7 +191,7 @@ func GenerateValuesForColumns(cg ColumnGraph, n int) map[ColumnFullName][]Value 
 }
 
 //TODO: better to be defined as a method with side-effect of map[ColumnFullName][]Value?
-func generateValuesForColumnsByRecursion(cg *ColumnGraph, i, n int, dict map[ColumnFullName][]Value) {
+func generateValuesForColumnsByRecursion(cg *SchemaGraph, i, n int, dict map[ColumnFullName][]Value) {
 	if cg.ColumnNodes[i].isDone {
 		return
 	}
