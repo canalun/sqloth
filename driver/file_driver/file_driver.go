@@ -5,17 +5,10 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/canalun/sqloth/domain/model"
 )
-
-var regexForTable = regexp.MustCompile("(?m)^ *CREATE TABLE .*")
-var regexForColumn = regexp.MustCompile("(?m)^ *`.*` *[^ ]+.*,")
-var regexForAutoIncrement = regexp.MustCompile("AUTO_INCREMENT")
-var regexForUnsigned = regexp.MustCompile("(UNSIGNED)|(Unsigned)|(unsigned)")
-var regexForColumnConstraint = regexp.MustCompile("(?m)^ *CONSTRAINT .*")
 
 type FileDriver struct {
 	FilePath string
@@ -27,7 +20,8 @@ func NewFileDriver(filePath string) FileDriver {
 	}
 }
 
-// TODO: fix to handle multi-index-key
+// GetSchema() parses the given schema file and return Schema model.
+// The returned model has the relation of tables and columns, and foreign key constraints.
 func (fd FileDriver) GetSchema() model.Schema {
 	f, err := os.Open(fd.FilePath)
 	if err != nil {
@@ -38,63 +32,43 @@ func (fd FileDriver) GetSchema() model.Schema {
 
 	schema := model.Schema{}
 
+	// prepare map slice to avoid double loop in parsing constraint
+	columnIndexWithinTable := []map[model.ColumnName]int{}
+	columnIndex := 0
+
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		line := scanner.Text()
+		lt := checkLineType(line)
 
-		tableLines := regexForTable.FindStringSubmatch(line)
-		if len(tableLines) > 0 {
-			// assuming tableLines are like ["CREATE TABLE `name` ..."]
-			_tableName := trimSqlQuery(strings.Fields(tableLines[0])[2])
-			tableName := model.TableName(_tableName)
-
-			table := model.NewTable(tableName, []model.Column{})
+		switch lt {
+		case "tableLine":
+			table := parseTableLine(line)
 			schema.AddTable(table)
-		}
 
-		columnLines := regexForColumn.FindStringSubmatch(line)
-		if len(columnLines) > 0 {
-			// assuming columnLines are like ["  `name` type ..."]
-			_columnName := trimSqlQuery(strings.Fields(columnLines[0])[0])
-			columnName := model.ColumnName(_columnName)
+			columnIndexWithinTable = append(columnIndexWithinTable, map[model.ColumnName]int{})
+			columnIndex = 0
 
-			_columnFullName := string(schema.LastTable().Name) + "." + string(columnName)
-			columnFullName := model.ColumnFullName(_columnFullName)
-
-			columnType, err := strToColumnType(strings.Fields(columnLines[0])[1])
+		case "columnLine":
+			tableName := schema.LastTable().Name
+			column, err := parseColumnLine(line, tableName)
 			if err != nil {
-				fmt.Println("unexpected data type")
+				fmt.Print(err)
 				return model.Schema{}
 			}
-
-			column := model.NewColumn(columnFullName, columnType)
-			if len(regexForAutoIncrement.FindStringSubmatch(columnLines[0])) > 0 {
-				column.SetAutoIncrement()
-			}
-			if len(regexForUnsigned.FindStringSubmatch(columnLines[0])) > 0 {
-				column.SetUnsigned(true)
-			} else {
-				column.SetUnsigned(false)
-			}
 			schema.LastTable().AddColumns(column)
-		}
 
-		columnKeyLines := regexForColumnConstraint.FindStringSubmatch(line)
-		if len(columnKeyLines) > 0 {
-			// assuming columnLines are like [" CONSTRAINT `XX` FOREIGN KEY (`column_name`) REFERENCES `table_name` (`column_name`) ..."]
-			_boundedColumnName := trimSqlQuery(strings.Fields(columnKeyLines[0])[4])
-			boundedColumnName := model.ColumnName(_boundedColumnName)
+			columnIndexWithinTable[len(columnIndexWithinTable)-1][column.Name] = columnIndex
+			columnIndex += 1
 
-			_referencedTableName := trimSqlQuery(strings.Fields(columnKeyLines[0])[6])
-			referencedTableName := model.TableName(_referencedTableName)
-
-			_referencedColumnName := trimSqlQuery(strings.Fields(columnKeyLines[0])[7])
-			referencedColumnName := model.ColumnName(_referencedColumnName)
-
-			constraint := model.NewConstraint(referencedTableName, referencedColumnName)
-			for i, c := range schema.LastTable().Columns {
-				if c.Name == boundedColumnName {
-					schema.LastTable().Columns[i].Constraints = append(schema.LastTable().Columns[i].Constraints, constraint)
+		case "constraintLine":
+			parsedConstraints := parseConstraintLine(line)
+			for _, c := range parsedConstraints {
+				if index, ok := columnIndexWithinTable[len(columnIndexWithinTable)-1][c.BoundedColumnName]; ok {
+					schema.LastTable().Columns[index].Constraints = append(schema.LastTable().Columns[index].Constraints, c.Constraint)
+				} else {
+					fmt.Println("error when parsing constraint")
+					return model.Schema{}
 				}
 			}
 		}
@@ -108,43 +82,108 @@ func (fd FileDriver) GetSchema() model.Schema {
 	return schema
 }
 
-func strToColumnType(str string) (ct model.ColumnType, err error) {
-	f := func(r rune) bool {
-		return r == '(' || r == ')' || r == ','
-	}
-	l := strings.FieldsFunc(str, f)
+// the below regular expressions assumes;
+// 		tableLines is an array as ["CREATE TABLE `name` ..."]
+// 		columnLines is an array as ["  `name` type ..."]
+// 		constraintLines is an array like ["[CONSTRAINT [symbol]] FOREIGN KEY (`column_name`) REFERENCES `table_name` (`column_name`) ..."]
+var regexForTableLine = regexp.MustCompile("(?m)^ *CREATE TABLE .*")
+var regexForColumnLine = regexp.MustCompile("(?m)^ *`.*` *[^ ]+.*,")
+var regexForConstraintLine = regexp.MustCompile("(?m)^.* FOREIGN KEY .*")
 
-	base, err := model.StrToColumnTypeBase(strings.ToLower(l[0]))
-	if err != nil {
-		return model.ColumnType{}, err
+func checkLineType(line string) string {
+	if tableLines := regexForTableLine.FindStringSubmatch(line); len(tableLines) > 0 {
+		return "tableLine"
+	} else if columnLines := regexForColumnLine.FindStringSubmatch(line); len(columnLines) > 0 {
+		return "columnLine"
+	} else if constraintLines := regexForConstraintLine.FindStringSubmatch(line); len(constraintLines) > 0 {
+		return "constraintLine"
+	} else {
+		return ""
 	}
-
-	var param int
-	if len(l) > 1 {
-		param, err = strconv.Atoi(l[1])
-		if err != nil {
-			return model.ColumnType{}, err
-		}
-	}
-	if base == model.Text {
-		param = 100
-	}
-	// TODO: handle varbinary appropriately
-	if base == model.Varbinary {
-		param = 100
-	}
-	// TODO: handle mediumblob appropriately
-	if base == model.Mediumblob {
-		param = 100
-	}
-
-	return model.ColumnType{
-		Base:  base,
-		Param: model.ColumnTypeParam(param),
-	}, nil
 }
 
-func trimSqlQuery(str string) string {
+////// parsers ///////////////////////////
+
+func parseTableLine(tableLine string) model.Table {
+	_tableName := trimSymbols(strings.Fields(tableLine)[2])
+	tableName := model.TableName(_tableName)
+
+	table := model.NewTable(tableName)
+	return table
+}
+
+var regexForAutoIncrement = regexp.MustCompile("AUTO_INCREMENT")
+var regexForUnsigned = regexp.MustCompile("(UNSIGNED)|(Unsigned)|(unsigned)")
+
+// parseColumnLine() parses not only column name, but also data type and type attribute.
+func parseColumnLine(columnLine string, tableName model.TableName) (model.Column, error) {
+	columnName := trimSymbols(strings.Fields(columnLine)[0])
+	_columnFullName := string(tableName) + "." + columnName
+	columnFullName := model.ColumnFullName(_columnFullName)
+
+	columnType, err := model.NewColumnType(strings.Fields(columnLine)[1])
+	if err != nil {
+		fmt.Println("unexpected data type")
+		return model.Column{}, err
+	}
+
+	column := model.NewColumn(columnFullName, columnType)
+	if len(regexForAutoIncrement.FindStringSubmatch(columnLine)) > 0 {
+		column.SetAutoIncrement()
+	}
+	if len(regexForUnsigned.FindStringSubmatch(columnLine)) > 0 {
+		column.SetUnsigned(true)
+	} else {
+		column.SetUnsigned(false)
+	}
+	return column, nil
+}
+
+// need to return slices in case constraints are written in multi-index style
+type parsedConstraint struct {
+	Constraint        model.Constraint
+	BoundedColumnName model.ColumnName
+}
+
+func parseConstraintLine(constraintLine string) []parsedConstraint {
+	// foreign key format is as below for mysql.
+	// [CONSTRAINT [symbol]] FOREIGN KEY
+	// 		[index_name] (index_col_name, ...)
+	// 		REFERENCES tbl_name (index_col_name,...)
+	// 		[ON DELETE reference_option]
+	// 		[ON UPDATE reference_option]
+	// https://dev.mysql.com/doc/refman/5.6/ja/create-table-foreign-keys.html
+
+	words := strings.Fields(constraintLine)
+
+	// cut optional words before (index_col_name, ...)
+	for i, w := range words {
+		fmt.Printf("%#v\n", w)
+		if w[0:1] == "(" {
+			words = words[i:]
+			break
+		}
+	}
+
+	boundedColumnNames := strings.Split(trimSymbols(words[0]), ",")
+	referencedTableName := trimSymbols(words[2])
+	referencedColumnNames := strings.Split(trimSymbols(words[3]), ",")
+
+	re := []parsedConstraint{}
+	for i, boundedColumnName := range boundedColumnNames {
+		constraint := model.NewConstraint(model.TableName(referencedTableName), model.ColumnName(referencedColumnNames[i]))
+		re = append(re, parsedConstraint{
+			Constraint:        constraint,
+			BoundedColumnName: model.ColumnName(boundedColumnName),
+		})
+	}
+
+	return re
+}
+
+//////////////////////////////////////////
+
+func trimSymbols(str string) string {
 	trimmingTarget := "()`"
 	return strings.Trim(str, trimmingTarget)
 }
