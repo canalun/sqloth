@@ -1,8 +1,9 @@
 
 # sqloth
-It is an offline SQL dummy data generator!!
+offline SQL dummy data generator!!
 
-*"Wanna test using dummy SQL data? You'll like SQLOTH...!"*
+*"you want dummy SQL data for test? will like sqloth...!"*
+
 ## 🎉 Features 🎉
 - ✅ completely offline, which means you can use confidential schema
 - ✅ automatically analyze foreign key dependencies and generate data along with them
@@ -10,8 +11,10 @@ It is an offline SQL dummy data generator!!
   - currently, the limit is around 10,000 records (100 records for 100 columns)...!
 - 🚫 ~~variable formats for random data generation. you can set prefix, suffix and randomize methods(e.g. uuid)!~~
   - currently, generate perfectly random data. you cannot set prefix, suffix or randomize methods...!
+
 ## 📦 Install 📦
 Please download the binary. That's all!!
+
 ## 💻 Usage 💻
 Please run the below.
 
@@ -20,7 +23,7 @@ Please run the below.
 Here is an example of input and output.
 
 ```
-$ sqloth -f ./path/to/your/schema.sql -n 10 > dummy.sql
+$ sqloth -f ./schema.sql -n 10 > dummy.sql
 
 $ cat dummy.sql
 
