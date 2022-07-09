@@ -63,7 +63,7 @@ func TestGenerateColumnGraph(t *testing.T) {
 										Base:  Int,
 										Param: ColumnTypeParam(10),
 									},
-									Constraints: []Constraint{
+									ForeignKeys: []ForeignKey{
 										{
 											TableName:  TableName("product"),
 											ColumnName: ColumnName("id"),
@@ -98,7 +98,7 @@ func TestGenerateColumnGraph(t *testing.T) {
 										Base:  Varchar,
 										Param: ColumnTypeParam(255),
 									},
-									Constraints: []Constraint{
+									ForeignKeys: []ForeignKey{
 										{
 											TableName:  TableName("customer"),
 											ColumnName: ColumnName("name"),
@@ -126,7 +126,7 @@ func TestGenerateColumnGraph(t *testing.T) {
 								Base:  Int,
 								Param: ColumnTypeParam(10),
 							},
-							Constraints: []Constraint{
+							ForeignKeys: []ForeignKey{
 								{
 									TableName:  "product",
 									ColumnName: "id",
@@ -168,7 +168,7 @@ func TestGenerateColumnGraph(t *testing.T) {
 								Base:  Varchar,
 								Param: ColumnTypeParam(255),
 							},
-							Constraints: []Constraint{
+							ForeignKeys: []ForeignKey{
 								{
 									TableName:  TableName("customer"),
 									ColumnName: ColumnName("name"),

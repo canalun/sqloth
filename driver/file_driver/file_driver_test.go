@@ -87,7 +87,7 @@ func TestGetSchema(t *testing.T) {
 									Base:  model.Varchar,
 									Param: model.ColumnTypeParam(255),
 								},
-								Constraints: []model.Constraint{
+								ForeignKeys: []model.ForeignKey{
 									{
 										TableName:  model.TableName("customer"),
 										ColumnName: model.ColumnName("name"),

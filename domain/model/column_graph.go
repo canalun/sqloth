@@ -59,10 +59,10 @@ func GenerateColumnGraph(schema Schema) ColumnGraph {
 	am := newAdjacencyMatrix(len(columnToIndex))
 	for _, table := range schema.Tables {
 		for _, column := range table.Columns {
-			if column.HasConstraint() {
+			if column.HasForeignKey() {
 				if i, ok := columnToIndex[string(table.Name)+"."+string(column.Name)]; ok {
-					for _, constraint := range column.Constraints {
-						if j, ok := columnToIndex[string(constraint.TableName)+"."+string(constraint.ColumnName)]; ok {
+					for _, foreignKey := range column.ForeignKeys {
+						if j, ok := columnToIndex[string(foreignKey.TableName)+"."+string(foreignKey.ColumnName)]; ok {
 							am[i][j] = 1
 						}
 					}

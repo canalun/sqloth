@@ -24,7 +24,7 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 		assertFn func([]string)
 	}{
 		{
-			name: "can generate query of dummy data from sql schema file with constraints",
+			name: "can generate query of dummy data from sql schema file with foreign keys",
 			fields: fields{
 				driver: func(ctrl *gomock.Controller) driver.Driver {
 					m := mock_driver.NewMockDriver(ctrl)
@@ -76,7 +76,7 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 										Type: model.ColumnType{
 											Base: model.Text,
 										},
-										Constraints: []model.Constraint{
+										ForeignKeys: []model.ForeignKey{
 											{
 												TableName:  "customer",
 												ColumnName: "id",

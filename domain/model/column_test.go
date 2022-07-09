@@ -101,7 +101,7 @@ func TestColumn_GenerateData(t *testing.T) {
 		FullName      ColumnFullName
 		Type          ColumnType
 		AutoIncrement bool
-		Constraints   []Constraint
+		ForeignKeys   []ForeignKey
 	}
 	type args struct {
 		n int
@@ -121,7 +121,7 @@ func TestColumn_GenerateData(t *testing.T) {
 					Base: Int,
 				},
 				AutoIncrement: true,
-				Constraints:   []Constraint{},
+				ForeignKeys:   []ForeignKey{},
 			},
 			args: args{n: 3},
 			want: []Value{Value("NULL"), Value("NULL"), Value("NULL")},
@@ -134,7 +134,7 @@ func TestColumn_GenerateData(t *testing.T) {
 				FullName:      tt.fields.FullName,
 				Type:          tt.fields.Type,
 				AutoIncrement: tt.fields.AutoIncrement,
-				Constraints:   tt.fields.Constraints,
+				ForeignKeys:   tt.fields.ForeignKeys,
 			}
 			got := c.GenerateData(tt.args.n)
 			diff := cmp.Diff(got, tt.want)
@@ -156,7 +156,7 @@ func TestGenerateValuesForColumns(t *testing.T) {
 		assertFn func(map[ColumnFullName][]Value)
 	}{
 		{
-			name: "return map of values for columns considering foreign key constraints",
+			name: "return map of values for columns considering foreign keys",
 			args: args{
 				cg: ColumnGraph{
 					AdjacencyMatrix: AdjacencyMatrix{

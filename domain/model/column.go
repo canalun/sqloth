@@ -96,13 +96,13 @@ func newColumnTypeBase(str string) (ColumnTypeBase, error) {
 type ColumnData string
 type ColumnName string
 type ColumnFullName string
-type Constraint struct {
+type ForeignKey struct {
 	TableName
 	ColumnName
 }
 
-func NewConstraint(tn TableName, cn ColumnName) Constraint {
-	return Constraint{
+func NewForeignKey(tn TableName, cn ColumnName) ForeignKey {
+	return ForeignKey{
 		TableName:  tn,
 		ColumnName: cn,
 	}
@@ -114,7 +114,7 @@ type Column struct {
 	Type          ColumnType
 	AutoIncrement bool
 	Unsigned      bool
-	Constraints   []Constraint
+	ForeignKeys   []ForeignKey
 }
 
 func NewColumn(fullName ColumnFullName, ct ColumnType) Column {
@@ -138,12 +138,12 @@ func (c *Column) SetUnsigned(b bool) {
 	c.Unsigned = b
 }
 
-func (c Column) HasConstraint() bool {
-	return len(c.Constraints) > 0
+func (c Column) HasForeignKey() bool {
+	return len(c.ForeignKeys) > 0
 }
 
-func (c *Column) SetConstraint(constraint Constraint) {
-	c.Constraints = append(c.Constraints, constraint)
+func (c *Column) SetForeignKey(foreignKey ForeignKey) {
+	c.ForeignKeys = append(c.ForeignKeys, foreignKey)
 }
 
 func (c Column) GenerateData(n int) []Value {
@@ -179,7 +179,7 @@ func (c Column) GenerateRandomData() ColumnData {
 }
 
 //TODO: better to be defined as a method of map[ColumnFullName][]Value?
-//TODO: shuffle values. currently, values with constraints are just simple sum of strings in the order.
+//TODO: shuffle values. currently, values with foreignKeys are just simple sum of strings in the order.
 func GenerateValuesForColumns(cg ColumnGraph, n int) map[ColumnFullName][]Value {
 	dict := map[ColumnFullName][]Value{}
 	for i := range cg.ColumnNodes {
