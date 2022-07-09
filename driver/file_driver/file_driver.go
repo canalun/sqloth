@@ -32,7 +32,7 @@ func (fd FileDriver) GetSchema() model.Schema {
 
 	schema := model.Schema{}
 
-	// prepare map slice to avoid double loop in parsing constraint
+	// prepare map slice to avoid double loop in parsing foreign keys
 	columnIndexWithinTable := []map[model.ColumnName]int{}
 	columnIndex := 0
 
@@ -61,13 +61,13 @@ func (fd FileDriver) GetSchema() model.Schema {
 			columnIndexWithinTable[len(columnIndexWithinTable)-1][column.Name] = columnIndex
 			columnIndex += 1
 
-		case "constraintLine":
-			parsedConstraints := parseConstraintLine(line)
-			for _, c := range parsedConstraints {
+		case "foreignKeyLine":
+			parsedForeignKeys := parseForeignKeyLine(line)
+			for _, c := range parsedForeignKeys {
 				if index, ok := columnIndexWithinTable[len(columnIndexWithinTable)-1][c.BoundedColumnName]; ok {
-					schema.LastTable().Columns[index].Constraints = append(schema.LastTable().Columns[index].Constraints, c.Constraint)
+					schema.LastTable().Columns[index].ForeignKeys = append(schema.LastTable().Columns[index].ForeignKeys, c.ForeignKey)
 				} else {
-					fmt.Println("error when parsing constraint")
+					fmt.Println("error when parsing foreignKey")
 					return model.Schema{}
 				}
 			}
@@ -85,18 +85,18 @@ func (fd FileDriver) GetSchema() model.Schema {
 // the below regular expressions assumes;
 // 		tableLines is an array as ["CREATE TABLE `name` ..."]
 // 		columnLines is an array as ["  `name` type ..."]
-// 		constraintLines is an array like ["[CONSTRAINT [symbol]] FOREIGN KEY (`column_name`) REFERENCES `table_name` (`column_name`) ..."]
+// 		foreignKeyLines is an array like ["[CONSTRAINT [symbol]] FOREIGN KEY (`column_name`) REFERENCES `table_name` (`column_name`) ..."]
 var regexForTableLine = regexp.MustCompile("(?m)^ *CREATE TABLE .*")
 var regexForColumnLine = regexp.MustCompile("(?m)^ *`.*` *[^ ]+.*,")
-var regexForConstraintLine = regexp.MustCompile("(?m)^.* FOREIGN KEY .*")
+var regexForForeignKeyLine = regexp.MustCompile("(?m)^.* FOREIGN KEY .*")
 
 func checkLineType(line string) string {
 	if tableLines := regexForTableLine.FindStringSubmatch(line); len(tableLines) > 0 {
 		return "tableLine"
 	} else if columnLines := regexForColumnLine.FindStringSubmatch(line); len(columnLines) > 0 {
 		return "columnLine"
-	} else if constraintLines := regexForConstraintLine.FindStringSubmatch(line); len(constraintLines) > 0 {
-		return "constraintLine"
+	} else if foreignKeyLines := regexForForeignKeyLine.FindStringSubmatch(line); len(foreignKeyLines) > 0 {
+		return "foreignKeyLine"
 	} else {
 		return ""
 	}
@@ -139,13 +139,13 @@ func parseColumnLine(columnLine string, tableName model.TableName) (model.Column
 	return column, nil
 }
 
-// need to return slices in case constraints are written in multi-index style
-type parsedConstraint struct {
-	Constraint        model.Constraint
+// need to return slices in case foreign keys are written in multi-index style
+type parsedForeignKey struct {
+	ForeignKey        model.ForeignKey
 	BoundedColumnName model.ColumnName
 }
 
-func parseConstraintLine(constraintLine string) []parsedConstraint {
+func parseForeignKeyLine(foreignKeyLine string) []parsedForeignKey {
 	// foreign key format is as below for mysql.
 	// [CONSTRAINT [symbol]] FOREIGN KEY
 	// 		[index_name] (index_col_name, ...)
@@ -154,7 +154,7 @@ func parseConstraintLine(constraintLine string) []parsedConstraint {
 	// 		[ON UPDATE reference_option]
 	// https://dev.mysql.com/doc/refman/5.6/ja/create-table-foreign-keys.html
 
-	words := strings.Fields(constraintLine)
+	words := strings.Fields(foreignKeyLine)
 
 	// cut optional words before (index_col_name, ...)
 	for i, w := range words {
@@ -169,11 +169,11 @@ func parseConstraintLine(constraintLine string) []parsedConstraint {
 	referencedTableName := trimSymbols(words[2])
 	referencedColumnNames := strings.Split(trimSymbols(words[3]), ",")
 
-	re := []parsedConstraint{}
+	re := []parsedForeignKey{}
 	for i, boundedColumnName := range boundedColumnNames {
-		constraint := model.NewConstraint(model.TableName(referencedTableName), model.ColumnName(referencedColumnNames[i]))
-		re = append(re, parsedConstraint{
-			Constraint:        constraint,
+		foreignKey := model.NewForeignKey(model.TableName(referencedTableName), model.ColumnName(referencedColumnNames[i]))
+		re = append(re, parsedForeignKey{
+			ForeignKey:        foreignKey,
 			BoundedColumnName: model.ColumnName(boundedColumnName),
 		})
 	}
