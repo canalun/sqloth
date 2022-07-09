@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 )
 
@@ -30,7 +31,43 @@ const (
 	Json       ColumnTypeBase = "json"
 )
 
-func StrToColumnTypeBase(str string) (ColumnTypeBase, error) {
+func NewColumnType(str string) (ct ColumnType, err error) {
+	f := func(r rune) bool {
+		return r == '(' || r == ')' || r == ','
+	}
+	l := strings.FieldsFunc(str, f)
+
+	base, err := newColumnTypeBase(strings.ToLower(l[0]))
+	if err != nil {
+		return ColumnType{}, err
+	}
+
+	var param int
+	if len(l) > 1 {
+		param, err = strconv.Atoi(l[1])
+		if err != nil {
+			return ColumnType{}, err
+		}
+	}
+	if base == Text {
+		param = 100
+	}
+	// TODO: handle varbinary appropriately
+	if base == Varbinary {
+		param = 100
+	}
+	// TODO: handle mediumblob appropriately
+	if base == Mediumblob {
+		param = 100
+	}
+
+	return ColumnType{
+		Base:  base,
+		Param: ColumnTypeParam(param),
+	}, nil
+}
+
+func newColumnTypeBase(str string) (ColumnTypeBase, error) {
 	switch str {
 	case string(Varchar):
 		return Varchar, nil

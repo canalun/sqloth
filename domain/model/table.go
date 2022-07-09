@@ -7,10 +7,10 @@ type Table struct {
 	Columns []Column
 }
 
-func NewTable(name TableName, columns []Column) Table {
+func NewTable(name TableName) Table {
 	return Table{
 		Name:    TableName(name),
-		Columns: columns,
+		Columns: []Column{},
 	}
 }
 

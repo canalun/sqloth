@@ -7,7 +7,58 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestStrToColumnTypeBase(t *testing.T) {
+func Test_NewColumnType(t *testing.T) {
+	type args struct {
+		str string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantCt  ColumnType
+		wantErr bool
+	}{
+		{
+			name: "set base of type without param(e.g. text, json)",
+			args: args{str: "JSON"},
+			wantCt: ColumnType{
+				Base: Json,
+			},
+			wantErr: false,
+		},
+		{
+			name: "separate and set base and param of type with param(e.g. varchar, int)",
+			args: args{str: "VARCHAR(255)"},
+			wantCt: ColumnType{
+				Base:  Varchar,
+				Param: ColumnTypeParam(255),
+			},
+			wantErr: false,
+		},
+		{
+			name: "set base and additional param for type TEXT",
+			args: args{str: "TEXT"},
+			wantCt: ColumnType{
+				Base:  Text,
+				Param: ColumnTypeParam(100),
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotCt, err := NewColumnType(tt.args.str)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewColumnType() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			diff := cmp.Diff(gotCt, tt.wantCt)
+			if diff != "" {
+				t.Error("-:got, +:want", diff)
+			}
+		})
+	}
+}
+
+func Test_newColumnTypeBase(t *testing.T) {
 	type args struct {
 		str string
 	}
@@ -31,9 +82,9 @@ func TestStrToColumnTypeBase(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := StrToColumnTypeBase(tt.args.str)
+			got, err := newColumnTypeBase(tt.args.str)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("StrToColumnTypeBase() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("newColumnTypeBase() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			diff := cmp.Diff(got, tt.want)
