@@ -14,7 +14,7 @@ Thanks for your great contribution!!
 
 ## Pull Request
 - If possible, please report an issue at first😉
-- But the project always welcome your collaborative pull request!
+- **But the project always welcome your collaborative pull request!**
 - **Please fork the develop branch to create PR🎉**
 
 ## Before Pushing...
@@ -24,7 +24,7 @@ Thanks for your great contribution!!
   - The ```driver``` layer processes (given) external info. The interface is in ```domain/driver``` and the implementation is in ```driver```.
     - Currently, the layer has only one module, ```file_driver```. This is because any inputs other than a schema file are NOT supposed.
   - Please combine them in the ```usecase``` layer to implement features.
-  
+
 ### Unit Test
 - Please write unit tests using go test
 - If you define new interfaces, please generate mock by editing ```make gen-mock```commands and running it.
