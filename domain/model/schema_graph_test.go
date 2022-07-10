@@ -7,7 +7,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestNewAdjacencyMatrix(t *testing.T) {
+func Test_NewAdjacencyMatrix(t *testing.T) {
 	type args struct {
 		n int
 	}
