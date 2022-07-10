@@ -13,7 +13,7 @@ type SchemaGraph struct {
 
 type AdjacencyMatrix [][]int
 
-func newAdjacencyMatrix(n int) AdjacencyMatrix {
+func NewAdjacencyMatrix(n int) AdjacencyMatrix {
 	am := make(AdjacencyMatrix, 0, n)
 	i := 0
 	for i < n {
@@ -29,6 +29,14 @@ type ColumnNode struct {
 	index  int
 }
 
+func NewColumnNode(c Column, isDone bool, i int) ColumnNode {
+	return ColumnNode{
+		column: c,
+		isDone: isDone,
+		index:  i,
+	}
+}
+
 func (cn *ColumnNode) Done() {
 	cn.isDone = true
 }
@@ -41,44 +49,7 @@ func (cn ColumnNode) GetColumn() Column {
 	return cn.column
 }
 
-func GenerateSchemaGraph(schema Schema) SchemaGraph {
-	columnNodes := []ColumnNode{}
-	columnToIndex := map[string]int{}
-	i := 0
-	for _, table := range schema.Tables {
-		for _, column := range table.Columns {
-			columnToIndex[string(table.Name)+"."+string(column.Name)] = i
-			columnNodes = append(columnNodes, ColumnNode{
-				column: column,
-				isDone: false,
-				index:  i,
-			})
-			i += 1
-		}
-	}
-
-	am := newAdjacencyMatrix(len(columnToIndex))
-	for _, table := range schema.Tables {
-		for _, column := range table.Columns {
-			if column.HasForeignKey() {
-				if i, ok := columnToIndex[string(table.Name)+"."+string(column.Name)]; ok {
-					for _, foreignKey := range column.ForeignKeys {
-						if j, ok := columnToIndex[string(foreignKey.TableName)+"."+string(foreignKey.ColumnName)]; ok {
-							am[i][j] = 1
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return SchemaGraph{
-		AdjacencyMatrix: am,
-		ColumnNodes:     columnNodes,
-	}
-}
-
-func (cg SchemaGraph) isAllDone() bool {
+func (cg SchemaGraph) IsAllDone() bool {
 	for _, cn := range cg.ColumnNodes {
 		if !cn.isDone {
 			return false

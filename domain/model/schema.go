@@ -52,25 +52,6 @@ func (t *Table) AddColumns(column Column) {
 	t.Columns = append(t.Columns, column)
 }
 
-func GenerateRecordsForTables(vfc map[ColumnFullName][]Value, schema Schema, n int) map[TableName][]Record {
-	rft := map[TableName][]Record{}
-	for _, table := range schema.Tables {
-		records := []Record{}
-		for i := 0; i < n; i++ {
-			var record Record
-			for _, column := range table.Columns {
-				//skip auto increment column
-				if !column.AutoIncrement {
-					record = append(record, vfc[column.FullName][i])
-				}
-			}
-			records = append(records, record)
-		}
-		rft[table.Name] = records
-	}
-	return rft
-}
-
 ////// Column //////////////////////////
 
 type Column struct {
@@ -243,74 +224,4 @@ func (c Column) GenerateRandomData() string {
 		data = generateRandomJson()
 	}
 	return data
-}
-
-//TODO: better to be defined as a method of map[ColumnFullName][]Value?
-//TODO: shuffle values. currently, values with foreignKeys are just simple sum of strings in the order.
-func GenerateValuesForColumns(cg SchemaGraph, n int) map[ColumnFullName][]Value {
-	dict := map[ColumnFullName][]Value{}
-	for i := range cg.ColumnNodes {
-		if !cg.isAllDone() {
-			generateValuesForColumnsByRecursion(&cg, i, n, dict)
-		}
-	}
-	return dict
-}
-
-//TODO: better to be defined as a method with side-effect of map[ColumnFullName][]Value?
-func generateValuesForColumnsByRecursion(cg *SchemaGraph, i, n int, dict map[ColumnFullName][]Value) {
-	if cg.ColumnNodes[i].isDone {
-		return
-	}
-
-	//TODO: error handling
-	hasParentNodes, _ := cg.HasParentNodes(i)
-	switch hasParentNodes {
-	case false:
-		c := cg.ColumnNodes[i].GetColumn()
-		d := c.GenerateData(n)
-		dict[c.FullName] = d
-		cg.ColumnNodes[i].Done()
-		if hasChildrenNodes, _ := cg.HasChildrenNodes(i); hasChildrenNodes {
-			childrenNodesIndexes, _ := cg.ChildrenNodeIndexes(i)
-			for _, childrenNodeIndex := range childrenNodesIndexes {
-				if allDone, _ := cg.IsParentNodesAreAllDone(childrenNodeIndex); allDone {
-					generateValuesForColumnsByRecursion(cg, childrenNodeIndex, n, dict)
-				}
-			}
-		}
-	default:
-		allDone, _ := cg.IsParentNodesAreAllDone(i)
-		switch allDone {
-		case true:
-			//TODO: distinct values and data
-			values := []Value{}
-			for j := 0; j < n; j++ {
-				d := ""
-				parentNodeIndexes, _ := cg.ParentNodeIndexes(i)
-				for _, parentNodeIndex := range parentNodeIndexes {
-					fn := cg.ColumnNodes[parentNodeIndex].GetColumn().FullName
-					d += string(dict[fn][j])
-				}
-				values = append(values, Value(d))
-			}
-			dict[cg.ColumnNodes[i].GetColumn().FullName] = values
-			cg.ColumnNodes[i].Done()
-			if hasChildrenNodes, _ := cg.HasChildrenNodes(i); hasChildrenNodes {
-				childrenNodesIndexes, _ := cg.ChildrenNodeIndexes(i)
-				for _, childrenNodeIndex := range childrenNodesIndexes {
-					if allDone, _ := cg.IsParentNodesAreAllDone(childrenNodeIndex); allDone {
-						generateValuesForColumnsByRecursion(cg, childrenNodeIndex, n, dict)
-					}
-				}
-			}
-		default:
-			parentNodeIndexes, _ := cg.ParentNodeIndexes(i)
-			for _, parentIndex := range parentNodeIndexes {
-				if !cg.ColumnNodes[parentIndex].IsDone() {
-					generateValuesForColumnsByRecursion(cg, parentIndex, n, dict)
-				}
-			}
-		}
-	}
 }

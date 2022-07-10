@@ -30,7 +30,7 @@ func TestNewAdjacencyMatrix(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := newAdjacencyMatrix(tt.args.n)
+			got := NewAdjacencyMatrix(tt.args.n)
 			diff := cmp.Diff(got, tt.want)
 			if diff != "" {
 				t.Error("-:got, +:want", diff)
@@ -39,161 +39,7 @@ func TestNewAdjacencyMatrix(t *testing.T) {
 	}
 }
 
-func TestGenerateSchemaGraph(t *testing.T) {
-	type args struct {
-		schema Schema
-	}
-	tests := []struct {
-		name string
-		args args
-		want SchemaGraph
-	}{
-		{
-			name: "generate correct column graph",
-			args: args{
-				schema: Schema{
-					Tables: []Table{
-						{
-							Name: "customer",
-							Columns: []Column{
-								{
-									Name:     "id",
-									FullName: "customer.id",
-									Type: ColumnType{
-										Base:  Int,
-										Param: ColumnTypeParam(10),
-									},
-									ForeignKeys: []ForeignKey{
-										{
-											TableName:  TableName("product"),
-											ColumnName: ColumnName("id"),
-										},
-									},
-								},
-								{
-									Name:     "name",
-									FullName: "customer.name",
-									Type: ColumnType{
-										Base:  Varchar,
-										Param: ColumnTypeParam(255),
-									},
-								},
-							},
-						},
-						{
-							Name: "product",
-							Columns: []Column{
-								{
-									Name:     "id",
-									FullName: "product.id",
-									Type: ColumnType{
-										Base:  Int,
-										Param: ColumnTypeParam(14),
-									},
-								},
-								{
-									Name:     "owner",
-									FullName: "product.owner",
-									Type: ColumnType{
-										Base:  Varchar,
-										Param: ColumnTypeParam(255),
-									},
-									ForeignKeys: []ForeignKey{
-										{
-											TableName:  TableName("customer"),
-											ColumnName: ColumnName("name"),
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			want: SchemaGraph{
-				AdjacencyMatrix: AdjacencyMatrix{
-					{0, 0, 1, 0},
-					{0, 0, 0, 0},
-					{0, 0, 0, 0},
-					{0, 1, 0, 0},
-				},
-				ColumnNodes: []ColumnNode{
-					ColumnNode{
-						column: Column{
-							Name:     "id",
-							FullName: "customer.id",
-							Type: ColumnType{
-								Base:  Int,
-								Param: ColumnTypeParam(10),
-							},
-							ForeignKeys: []ForeignKey{
-								{
-									TableName:  "product",
-									ColumnName: "id",
-								},
-							},
-						},
-						isDone: false,
-						index:  0,
-					},
-					ColumnNode{
-						column: Column{
-							Name:     "name",
-							FullName: "customer.name",
-							Type: ColumnType{
-								Base:  Varchar,
-								Param: ColumnTypeParam(255),
-							},
-						},
-						isDone: false,
-						index:  1,
-					},
-					ColumnNode{
-						column: Column{
-							Name:     "id",
-							FullName: "product.id",
-							Type: ColumnType{
-								Base:  Int,
-								Param: ColumnTypeParam(14),
-							},
-						},
-						isDone: false,
-						index:  2,
-					},
-					ColumnNode{
-						column: Column{
-							Name:     "owner",
-							FullName: "product.owner",
-							Type: ColumnType{
-								Base:  Varchar,
-								Param: ColumnTypeParam(255),
-							},
-							ForeignKeys: []ForeignKey{
-								{
-									TableName:  TableName("customer"),
-									ColumnName: ColumnName("name"),
-								},
-							},
-						},
-						isDone: false,
-						index:  3,
-					},
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := GenerateSchemaGraph(tt.args.schema)
-			diff := cmp.Diff(got, tt.want, cmp.AllowUnexported(ColumnNode{}))
-			if diff != "" {
-				t.Errorf("GenerateSchemaGraph(); -got, +want\n%v", diff)
-			}
-		})
-	}
-}
-
-func TestSchemaGraph_isAllDone(t *testing.T) {
+func TestSchemaGraph_IsAllDone(t *testing.T) {
 	type fields struct {
 		ColumnNodes []ColumnNode
 	}
@@ -236,8 +82,8 @@ func TestSchemaGraph_isAllDone(t *testing.T) {
 			cg := SchemaGraph{
 				ColumnNodes: tt.fields.ColumnNodes,
 			}
-			if got := cg.isAllDone(); got != tt.want {
-				t.Errorf("SchemaGraph.isAllDone() = %v, want %v", got, tt.want)
+			if got := cg.IsAllDone(); got != tt.want {
+				t.Errorf("SchemaGraph.IsAllDone() = %v, want %v", got, tt.want)
 			}
 		})
 	}
