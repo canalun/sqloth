@@ -7,6 +7,9 @@ import (
 	"time"
 )
 
+// The functions in this file generate random value.
+// They are called by Column, because it is Column that is responsible for generating random data.
+
 var chars = []rune("")
 var lowerChars = []rune("abcdefghijklmnopqrstuvwxyz")
 var capitalChars = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -14,7 +17,7 @@ var numChars = []rune("0123456789")
 
 const layout = "2006-01-02 15:04:05"
 
-//mysql int range
+// Currently, the range is defined along with the MySQL one
 var intRangeMap = map[ColumnTypeBase][]int{
 	Tinyint:   {-128, 127},
 	Smallint:  {-32768, 32767},

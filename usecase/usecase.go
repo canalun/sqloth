@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/canalun/sqloth/domain/driver"
+	"github.com/canalun/sqloth/domain/dservice"
 	"github.com/canalun/sqloth/domain/model"
 )
 
@@ -19,9 +20,9 @@ func NewUsecase(driver driver.Driver) Usecase {
 func (u Usecase) GenerateQueryOfDummyData(num int) []string {
 	schema := u.driver.GetSchema()
 
-	columnGraph := model.GenerateColumnGraph(schema)
-	valuesForColumns := model.GenerateValuesForColumns(columnGraph, num)
-	recordsForTables := model.GenerateRecordsForTables(valuesForColumns, schema, num)
+	schemaGraph := dservice.GenerateSchemaGraph(schema)
+	valuesForColumns := dservice.GenerateValuesForColumns(schemaGraph, num)
+	recordsForTables := dservice.GenerateRecordsForTables(valuesForColumns, schema, num)
 	queries := model.GenerateQuery(recordsForTables, schema)
 
 	return queries
