@@ -17,7 +17,7 @@ var numChars = []rune("0123456789")
 
 const layout = "2006-01-02 15:04:05"
 
-// mysql int range
+// Currently, the range is defined along with the MySQL one
 var intRangeMap = map[ColumnTypeBase][]int{
 	Tinyint:   {-128, 127},
 	Smallint:  {-32768, 32767},
