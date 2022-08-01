@@ -17,7 +17,7 @@ import (
 
 // In sqloth, it is Column that is responsible for data generation,
 // because the format of random data is determined by column data type,
-// and it seems to be a good choice to seen data generation as a behavior of Column.
+// and it would be a good choice to see data generation as a behavior of Column.
 
 ////// Schema //////////////////////////
 
@@ -58,7 +58,7 @@ type Column struct {
 	Name          ColumnName
 	FullName      ColumnFullName
 	Type          ColumnType
-	ForeignKeys   []ForeignKey
+	ForeignKey    ForeignKey
 	AutoIncrement bool
 	Unsigned      bool
 }
@@ -163,11 +163,11 @@ func newColumnTypeBase(str string) (ColumnTypeBase, error) {
 }
 
 func (c Column) HasForeignKey() bool {
-	return len(c.ForeignKeys) > 0
+	return c.ForeignKey != ForeignKey{}
 }
 
 func (c *Column) SetForeignKey(foreignKey ForeignKey) {
-	c.ForeignKeys = append(c.ForeignKeys, foreignKey)
+	c.ForeignKey = foreignKey
 }
 
 func (c *Column) SetAutoIncrement() {

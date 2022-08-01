@@ -76,15 +76,9 @@ func TestGenerateQueryOfDummyData(t *testing.T) {
 										Type: model.ColumnType{
 											Base: model.Text,
 										},
-										ForeignKeys: []model.ForeignKey{
-											{
-												TableName:  "customer",
-												ColumnName: "id",
-											},
-											{
-												TableName:  "customer",
-												ColumnName: "name",
-											},
+										ForeignKey: model.ForeignKey{
+											TableName:  "customer",
+											ColumnName: "id",
 										},
 									},
 									{
