@@ -3,6 +3,7 @@ generate-mock:
 	mockgen -destination=./domain/driver/mock_driver/mock_driver.go -package=mock_driver github.com/canalun/sqloth/domain/driver Driver
 
 test:
+	go install gotest.tools/gotestsum@latest
 	gotestsum --format pkgname
 
 run-ci:

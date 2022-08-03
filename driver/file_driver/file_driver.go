@@ -65,7 +65,7 @@ func (fd FileDriver) GetSchema() model.Schema {
 			parsedForeignKeys := parseForeignKeyLine(line)
 			for _, c := range parsedForeignKeys {
 				if index, ok := columnIndexWithinTable[len(columnIndexWithinTable)-1][c.BoundedColumnName]; ok {
-					schema.LastTable().Columns[index].ForeignKeys = append(schema.LastTable().Columns[index].ForeignKeys, c.ForeignKey)
+					schema.LastTable().Columns[index].ForeignKey = c.ForeignKey
 				} else {
 					fmt.Println("error when parsing foreignKey")
 					return model.Schema{}
@@ -158,7 +158,6 @@ func parseForeignKeyLine(foreignKeyLine string) []parsedForeignKey {
 
 	// cut optional words before (index_col_name, ...)
 	for i, w := range words {
-		fmt.Printf("%#v\n", w)
 		if w[0:1] == "(" {
 			words = words[i:]
 			break
