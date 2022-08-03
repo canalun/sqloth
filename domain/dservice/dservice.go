@@ -19,10 +19,8 @@ func GenerateSchemaGraph(schema model.Schema) model.SchemaGraph {
 		for _, column := range table.Columns {
 			if column.HasForeignKey() {
 				if i, ok := columnToIndex[string(table.Name)+"."+string(column.Name)]; ok {
-					for _, foreignKey := range column.ForeignKeys {
-						if j, ok := columnToIndex[string(foreignKey.TableName)+"."+string(foreignKey.ColumnName)]; ok {
-							am[i][j] = 1
-						}
+					if j, ok := columnToIndex[string(column.ForeignKey.TableName)+"."+string(column.ForeignKey.ColumnName)]; ok {
+						am[i][j] = 1
 					}
 				}
 			}
@@ -36,7 +34,6 @@ func GenerateSchemaGraph(schema model.Schema) model.SchemaGraph {
 }
 
 //TODO: better to be defined as a method of map[ColumnFullName][]Value?
-//TODO: shuffle values. currently, values with foreignKeys are just simple sum of strings in the order.
 func GenerateValuesForColumns(cg model.SchemaGraph, n int) map[model.ColumnFullName][]model.Value {
 	dict := map[model.ColumnFullName][]model.Value{}
 	for i := range cg.ColumnNodes {

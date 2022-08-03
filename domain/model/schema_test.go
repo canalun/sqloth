@@ -102,7 +102,7 @@ func TestColumn_GenerateData(t *testing.T) {
 		FullName      ColumnFullName
 		Type          ColumnType
 		AutoIncrement bool
-		ForeignKeys   []ForeignKey
+		ForeignKey    ForeignKey
 	}
 	type args struct {
 		n int
@@ -122,7 +122,7 @@ func TestColumn_GenerateData(t *testing.T) {
 					Base: Int,
 				},
 				AutoIncrement: true,
-				ForeignKeys:   []ForeignKey{},
+				ForeignKey:    ForeignKey{},
 			},
 			args: args{n: 3},
 			want: []Value{Value("NULL"), Value("NULL"), Value("NULL")},
@@ -135,7 +135,7 @@ func TestColumn_GenerateData(t *testing.T) {
 				FullName:      tt.fields.FullName,
 				Type:          tt.fields.Type,
 				AutoIncrement: tt.fields.AutoIncrement,
-				ForeignKeys:   tt.fields.ForeignKeys,
+				ForeignKey:    tt.fields.ForeignKey,
 			}
 			got := c.GenerateData(tt.args.n)
 			diff := cmp.Diff(got, tt.want)

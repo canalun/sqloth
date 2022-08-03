@@ -32,11 +32,9 @@ func TestGenerateSchemaGraph(t *testing.T) {
 										Base:  model.Int,
 										Param: model.ColumnTypeParam(10),
 									},
-									ForeignKeys: []model.ForeignKey{
-										{
-											TableName:  model.TableName("product"),
-											ColumnName: model.ColumnName("id"),
-										},
+									ForeignKey: model.ForeignKey{
+										TableName:  model.TableName("product"),
+										ColumnName: model.ColumnName("id"),
 									},
 								},
 								{
@@ -67,11 +65,9 @@ func TestGenerateSchemaGraph(t *testing.T) {
 										Base:  model.Varchar,
 										Param: model.ColumnTypeParam(255),
 									},
-									ForeignKeys: []model.ForeignKey{
-										{
-											TableName:  model.TableName("customer"),
-											ColumnName: model.ColumnName("name"),
-										},
+									ForeignKey: model.ForeignKey{
+										TableName:  model.TableName("customer"),
+										ColumnName: model.ColumnName("name"),
 									},
 								},
 							},
@@ -94,11 +90,9 @@ func TestGenerateSchemaGraph(t *testing.T) {
 							Base:  model.Int,
 							Param: model.ColumnTypeParam(10),
 						},
-						ForeignKeys: []model.ForeignKey{
-							{
-								TableName:  "product",
-								ColumnName: "id",
-							},
+						ForeignKey: model.ForeignKey{
+							TableName:  "product",
+							ColumnName: "id",
 						},
 					},
 						false,
@@ -133,11 +127,9 @@ func TestGenerateSchemaGraph(t *testing.T) {
 							Base:  model.Varchar,
 							Param: model.ColumnTypeParam(255),
 						},
-						ForeignKeys: []model.ForeignKey{
-							{
-								TableName:  model.TableName("customer"),
-								ColumnName: model.ColumnName("name"),
-							},
+						ForeignKey: model.ForeignKey{
+							TableName:  model.TableName("customer"),
+							ColumnName: model.ColumnName("name"),
 						},
 					},
 						false,
